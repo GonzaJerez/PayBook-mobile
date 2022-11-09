@@ -17,7 +17,6 @@ WebBrowser.maybeCompleteAuthSession();
 export const useGoogleAuth = () =>{
 
   const {googleSignIn} = useContext(AuthContext)
-  const [statusGoogle, setStatusGoogle] = useState('')
 
   const [_request, response, promptAsync] = GoogleSignIn.useAuthRequest({
     expoClientId: GOOGLE_EXPO_CLIENT,
@@ -27,25 +26,13 @@ export const useGoogleAuth = () =>{
   })
 
   useEffect(()=>{
-    Alert.alert('type', response?.type)
-    setStatusGoogle(response?.type || '')
-    // if (response?.type === 'success') {
-    //   const { authentication } = response;
-      
-    //   if (authentication?.accessToken) {
-    //     Alert.alert('token', authentication.accessToken)
-    //     googleSignIn(authentication?.accessToken);
-    //   }
-    // }
     if (response?.type === 'success') {
       const {access_token} = response.params
       googleSignIn(access_token);
-      Alert.alert('token', access_token)
     }
   },[response])
 
   return {
     activateGoogleAuth: promptAsync,
-    statusGoogle
   }
 }

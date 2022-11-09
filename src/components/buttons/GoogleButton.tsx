@@ -7,7 +7,7 @@ import {useGoogleAuth} from '../../hooks/useGoogleAuth';
 
 export const GoogleButton = () => {
 
-  const {activateGoogleAuth,statusGoogle} = useGoogleAuth()
+  const {activateGoogleAuth} = useGoogleAuth()
 
   return (
     <View style={styles.container}>
@@ -21,7 +21,6 @@ export const GoogleButton = () => {
         />
         <Text style={styles.googleText}>Ingresar con Google</Text>
       </TouchableOpacity>
-      <Text>{statusGoogle}</Text>
     </View>
   )
 }
