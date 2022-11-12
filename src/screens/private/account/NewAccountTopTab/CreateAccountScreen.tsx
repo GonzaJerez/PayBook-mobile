@@ -6,7 +6,7 @@ import {NewAccountTopTabNavigation} from '../../../../navigation/NewAccountTopTa
 
 interface Props extends NativeStackScreenProps<NewAccountTopTabNavigation,'CreateAccountScreen'>{}
 
-export const CreateAccountScreen = ({navigation}:Props) => {
+export const CreateAccountScreen = () => {
   return (
     <ScrollView style={styles.container}>
       <CreateAccountForm />

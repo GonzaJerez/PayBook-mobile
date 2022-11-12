@@ -24,7 +24,7 @@ export const FooterBrand = ({hasScreenHeader}:Props) => {
         resizeMode='contain'
       />
       <Text style={[styles.text, {color:theme.disable}]}>{NAME_APP}</Text>
-      <Text style={[styles.version,{color:theme.ligthText}]}>Versión {VERSION_APP}</Text>
+      <Text style={[styles.version,{color:theme.disable}]}>Versión {VERSION_APP}</Text>
     </View>
   )
 }

@@ -8,12 +8,15 @@ import {UpdatePasswordForm} from '../../components/form/UpdatePasswordForm'
 
 interface Props extends NativeStackScreenProps<AuthStackNavigator,'UpdatePasswordScreen'>{}
 
-export const UpdatePasswordScreen = ({navigation}:Props) => {
+export const UpdatePasswordScreen = ({navigation, route}:Props) => {
+
+  const {email} = route.params
+
   return (
     <View style={styles.container}>
 
       <View style={styles.form}>
-        <UpdatePasswordForm navigation={navigation}/>
+        <UpdatePasswordForm navigation={navigation} email={email}/>
       </View>
 
       <FooterBrand hasScreenHeader/>

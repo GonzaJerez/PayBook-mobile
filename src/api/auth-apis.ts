@@ -1,3 +1,4 @@
+import {LoginUser, PasswordRecovery, RenewPassword, ValidateSecurityCode} from "../interfaces/Auth";
 import {CreateUser} from "../interfaces/User";
 import {baseApi} from "./baseApi";
 
@@ -55,3 +56,37 @@ export const registerApi = async (body:CreateUser) =>{
 
   return resp;
 }
+
+export const passwordRecoveryApi = async (body:PasswordRecovery) =>{
+
+  const resp = await baseApi({
+    endpoint: '/auth/password-recovery',
+    method: 'POST',
+    body
+  })
+
+  return resp;
+}
+
+export const validateSecurityCodeApi = async (body:ValidateSecurityCode) =>{
+
+  const resp = await baseApi({
+    endpoint: '/auth/validate-security-code',
+    method: 'POST',
+    body
+  })
+
+  return resp;
+}
+
+export const renewPasswordApi = async (body:RenewPassword) =>{
+
+  const resp = await baseApi({
+    endpoint: '/auth/renew-password',
+    method: 'POST',
+    body
+  })
+
+  return resp;
+}
+

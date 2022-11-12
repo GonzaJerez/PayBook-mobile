@@ -11,6 +11,7 @@ import {PrivateStackNavigation} from '../../navigation/PrivateNavigation'
 import {AccountsContext} from '../../context/accounts/AccountsContext'
 import {AuthContext} from '../../context/auth/AuthContext'
 import {ValidRoles} from '../../interfaces/ValidRoles'
+import {MAX_ACCOUNTS_FREE} from '../../constants/ContantsAccounts'
 
 export const AccountPicker = () => {
 
@@ -25,7 +26,7 @@ export const AccountPicker = () => {
 
   const toCreateAccount = () => {
     setIsPopupOpen(false)
-    if(allAccounts.length === 2 && !user?.roles.includes(ValidRoles.USER_PREMIUM)){
+    if(allAccounts.length === MAX_ACCOUNTS_FREE && !user?.roles.includes(ValidRoles.USER_PREMIUM)){
       navigate('SuscriptionNavigation', {screen: 'SuscriptionScreen'})
     } else {
       navigate('AccountNavigation', {screen: 'NewAccountNavigation'})

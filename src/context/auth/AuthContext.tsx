@@ -3,6 +3,7 @@ import {createContext, useContext, useEffect, useReducer} from 'react';
 import {Platform} from 'react-native';
 import {checkPremiumApi, checkTokenApi, googleLoginApi, loginApi, registerApi} from '../../api/auth-apis';
 import {deleteUserApi, premiumUserApi, removePremiumUserApi, updateUserApi} from '../../api/users-apis';
+import {LoginUser} from '../../interfaces/Auth';
 import {CreateUser, UpdateUser, UserResponse} from '../../interfaces/User';
 import {RequestsStatusContext} from '../requests-status/RequestsStatusContext';
 
@@ -90,7 +91,7 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
   const googleSignIn = async (tokenGoogle: string) => {
     startLoading()
     try {
-      const resp = await googleLoginApi(tokenGoogle)
+      const resp: UserResponse = await googleLoginApi(tokenGoogle)
 
       if (!existError(resp)) {
         dispatch({type: 'login', payload: resp})
@@ -171,7 +172,7 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
     })
 
     try {
-      const resp = await deleteUserApi(state.user?.id, state.token)
+      const resp: UserResponse = await deleteUserApi(state.user?.id, state.token)
       if (!existError(resp)) {
         logout()
         setSuccessStatus()
@@ -191,7 +192,7 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
     })
 
     try {
-      const resp = await premiumUserApi(state.user?.id, state.token, {revenue_id})
+      const resp: UserResponse = await premiumUserApi(state.user?.id, state.token, {revenue_id})
       if (!existError(resp)) {
         setSuccessStatus()
         dispatch({type: 'updateUser', payload: {user: resp.user}})
@@ -211,7 +212,7 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
     })
 
     try {
-      const resp = await removePremiumUserApi(state.user?.id, state.token)
+      const resp : UserResponse= await removePremiumUserApi(state.user?.id, state.token)
       if (!existError(resp)) {
         setSuccessStatus()
         dispatch({type: 'updateUser', payload: {user: resp.user}})
@@ -226,7 +227,7 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
   const checkPremium = async () => {
     if(!state.token) return ;
     try {
-      const resp = await checkPremiumApi(state.token)
+      const resp: UserResponse = await checkPremiumApi(state.token)
       if (!existError(resp)) {
         dispatch({type: 'updateUser', payload: {user: resp.user}})
       }

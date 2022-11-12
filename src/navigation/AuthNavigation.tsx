@@ -12,8 +12,8 @@ export type AuthStackNavigator = {
   LoginScreen: undefined
   RegisterScreen: undefined
   ForgotPasswordScreen: undefined
-  ConfirmCodeEmailScreen: undefined
-  UpdatePasswordScreen: undefined
+  ConfirmCodeEmailScreen: {email: string}
+  UpdatePasswordScreen: {email: string}
 }
 
 

@@ -8,13 +8,15 @@ import {AuthStackNavigator} from '../../navigation/AuthNavigation'
 
 interface Props extends NativeStackScreenProps<AuthStackNavigator,'ConfirmCodeEmailScreen'>{}
 
-export const ConfirmCodeEmailScreen = ({navigation}:Props) => {
+export const ConfirmCodeEmailScreen = ({navigation,route}:Props) => {
+
+  const {email} = route.params
 
   return (
     <View style={styles.container}>
 
       <View style={styles.formContainer}>
-        <ConfirmCodeForm navigation={navigation}/>
+        <ConfirmCodeForm navigation={navigation} email={email}/>
       </View>
 
       <FooterBrand hasScreenHeader/>
