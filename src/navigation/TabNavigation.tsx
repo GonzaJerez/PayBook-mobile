@@ -69,7 +69,6 @@ export const TabNavigation = () => {
         component={CreateExpenseTopTab}
         options={{
           title: 'Nuevo gasto',
-          // headerShown: false,
           tabBarLabel: () => (<View />),
           tabBarButton: ({onPress}) => (
             <NewExpenseButton onPress={onPress} />

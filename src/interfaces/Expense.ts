@@ -76,7 +76,7 @@ export interface StatisticsResponse {
   totalAmount:  number;
   totalAmountsForCategories:    AmountByFilter;
   totalAmountsForSubcategories: AmountByFilter;
-  expensesForMonthInLastYear:   ExpensesForMonth[];
+  amountsForMonthInActualYear:  ExpensesForMonth[];
   statusCode?:                  number;
   message?:                     string;
   error?:                       string;

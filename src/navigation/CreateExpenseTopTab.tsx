@@ -27,6 +27,7 @@ export function CreateExpenseTopTab() {
         tabBarActiveTintColor: theme.colors.card,
         tabBarLabelStyle: {fontWeight: '600'},
         tabBarIndicatorStyle: {backgroundColor: '#fff'},
+        tabBarPressColor: theme.colors.primary
       }}
     >
 

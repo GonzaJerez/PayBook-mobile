@@ -22,7 +22,7 @@ export const AmountsForMonths = ({heightChart, statistics}: Props) => {
       month: i,
       totalAmount: 0
     }
-    statistics?.expensesForMonthInLastYear.forEach(exp => {
+    statistics?.amountsForMonthInActualYear.forEach(exp => {
       if (i === exp.month) {
         expOnMonth.totalAmount = exp.totalAmount
       }

@@ -72,8 +72,10 @@ export const ExpenseForm = ({initialValues, onSubmit}: Props) => {
         Yup.object({
           amount: Yup
             .number()
-            .positive('El monto no puede ser negativo')
-            .required('El monto no puede quedar vacío'),
+            .typeError('El monto debe ser un número entero (sin centavos).')
+            .integer('El monto tiene que ser entero (sin centavos).')
+            .required('El monto no puede quedar vacío')
+            .positive('El monto no puede ser negativo'),
           complete_date: Yup
             .date()
             .max(new Date())
@@ -86,14 +88,15 @@ export const ExpenseForm = ({initialValues, onSubmit}: Props) => {
             .required('La subcategoría es requerida'),
           installments: Yup
             .number()
+            .integer('El número de cuotas tiene que ser entero.')
             .positive('Las cuotas no pueden ser negativas')
             .required(),
           name_credit_payment: Yup
             .string()
-            .max(30),
+            .max(30, 'Máximo 30 caracteres.'),
           description: Yup
             .string()
-            .max(200)
+            .max(200, 'Máximo 200 caracteres.')
         })
       }
     >

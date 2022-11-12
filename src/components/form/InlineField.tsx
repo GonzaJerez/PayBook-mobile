@@ -32,35 +32,36 @@ export const InlineField = ({name, label, type='default', placeholder, onBlurEve
           <DefaultLabel label={label}/>
         )
       }
-
-      <View style={styles.inputContainer}>
-        {
-          (label === 'Monto' || label === 'Min' || label === 'Max') && (
-            <Text style={{color:theme.colors.text}}>$</Text>
-          )
-        }
-        <TextInput
-          style={[
-            styles.input, 
-            {
-              borderColor: (errorVisible && meta.error) ? theme.delete : theme.colors.border,
-              color: theme.colors.text
-            }
-          ]}
-          keyboardType={type}
-          selectionColor={theme.colors.primary}
-          placeholder={placeholder}
-          placeholderTextColor={theme.disable}
-          value={String(field.value || '')}
-          onChangeText={value => helpers.setValue(value)}
-          onBlur={onBlur}
-          onFocus={()=>helpers.setTouched(true)}
-        />
-      </View>
+      <View style={styles.inputSection}>
+        <View style={styles.inputContainer}>
+          {
+            (label === 'Monto' || label === 'Min' || label === 'Max') && (
+              <Text style={{color:theme.colors.text}}>$</Text>
+            )
+          }
+          <TextInput
+            style={[
+              styles.input, 
+              {
+                borderColor: (errorVisible && meta.error) ? theme.delete : theme.colors.border,
+                color: theme.colors.text
+              }
+            ]}
+            keyboardType={type}
+            selectionColor={theme.colors.primary}
+            placeholder={placeholder}
+            placeholderTextColor={theme.disable}
+            value={String(field.value || '')}
+            onChangeText={value => helpers.setValue(value)}
+            onBlur={onBlur}
+            onFocus={()=>helpers.setTouched(true)}
+          />
+        </View>
 
       { (errorVisible && meta.error) && (
         <ErrorField>{meta.error}</ErrorField>
       )}
+      </View>
       
     </View>
   )
@@ -71,10 +72,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     flexDirection:'row',
     justifyContent:'space-between',
-    alignItems:'center'
+    alignItems:'center',
   },
-  inputContainer: {
+  inputSection: {
     width:'60%',
+  },
+  inputContainer:{
+    width:'100%',
     flexDirection:'row',
     alignItems:'center'
   },
