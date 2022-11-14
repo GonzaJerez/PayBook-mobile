@@ -14,13 +14,14 @@ import {AccountsContext} from '../../context/accounts/AccountsContext'
 import {CreateAccount} from '../../interfaces/Account'
 import {MAX_USERS_IN_ACCOUNTS} from '../../constants/ContantsAccounts'
 import {NewAccountTopTabNavigation} from '../../navigation/NewAccountTopTab'
+import {ErrorField} from '../texts/ErrorField'
 
 
 const maxUsersAllowed = getRange(MAX_USERS_IN_ACCOUNTS)
 
 export const CreateAccountForm = () => {
 
-  const {createAccount} = useContext(AccountsContext)
+  const {createAccount, isLoading, error} = useContext(AccountsContext)
   const {goBack} = useNavigation<NativeStackNavigationProp<NewAccountTopTabNavigation>>()
 
 
@@ -33,7 +34,7 @@ export const CreateAccountForm = () => {
     <Formik
       initialValues={{
         name: '',
-        max_num_users: 1,
+        max_num_users: 10,
         description: ''
       }}
       onSubmit={toCreateAccount}
@@ -71,9 +72,12 @@ export const CreateAccountForm = () => {
             placeholder='Descripción de la cuenta'
           />
 
+          {(error) && (<ErrorField>{error}</ErrorField>)}
+
           <SubmitOrCancelButtons 
             onCancel={()=>goBack()}
             onSubmit={handleSubmit}
+            isLoading={isLoading}
             disable={(Object.keys(errors).length > 0 || Object.keys(touched).length === 0)}
           />
         </View>

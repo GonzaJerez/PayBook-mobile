@@ -1,5 +1,5 @@
-import {Text, StyleSheet} from 'react-native'
-import React, {useContext} from 'react'
+import {Text, StyleSheet, View} from 'react-native'
+import React, {useContext, useState} from 'react'
 import {Formik} from 'formik'
 import * as Yup from 'yup'
 import {useNavigation} from '@react-navigation/native';
@@ -9,26 +9,35 @@ import {AccountStackNavigation} from '../../navigation/AccountNavigation';
 import {Field} from './Field';
 import {SubmitOrCancelButtons} from '../buttons/SubmitOrCancelButtons';
 import {ThemeContext} from '../../context/theme/ThemeContext';
+import {ErrorField} from '../texts/ErrorField';
 
 
 interface Props {
   label: 'cuenta' | 'usuario' | 'categoría' | 'subcategoría' | 'gasto en cuotas';
   initialValue: string;
-  onSubmit: (body:{[x:string]:string})=>void;
+  isLoading: boolean;
+  onSubmit: (body:{[x:string]:string})=>Promise<string | undefined>;
 }
 
-export const EditNameField = ({label,initialValue,onSubmit}: Props) => {
+export const EditNameField = ({label,initialValue,isLoading,onSubmit}: Props) => {
 
   const {theme} = useContext(ThemeContext)
   const {goBack} = useNavigation<NativeStackNavigationProp<AccountStackNavigation>>()
+  const [error, setError] = useState<string|undefined>()
 
-  const changeName = (name:string) => {
+  const changeName = async(name:string) => {
+    let hasError:string | undefined;
     if (label === 'usuario') {
-      onSubmit({fullName: name})
+      hasError = await onSubmit({fullName: name})
     } else {
-      onSubmit({name})
+      hasError = await onSubmit({name})
     }
-    goBack()
+    
+    if(hasError){
+      setError(hasError)
+    } else{
+      goBack()
+    }
   }
 
   return (
@@ -43,26 +52,32 @@ export const EditNameField = ({label,initialValue,onSubmit}: Props) => {
       })}
     >
       {({handleSubmit, errors}) => (
-        <>
+        <View style={styles.formContainer}>
           <Text style={[styles.label, {color:theme.colors.text}]}>Nombre de {label}:</Text>
           <Field
             placeholder={`Nombre de ${label}`}
             name='name'
           />
 
+          {(error) && <ErrorField>{error}</ErrorField>}
+
           <SubmitOrCancelButtons
             onSubmit={handleSubmit}
             onCancel={goBack}
             disable={Object.keys(errors).length > 0}
+            isLoading={isLoading}
           />
-        </>
+        </View>
       )}
     </Formik>
   )
 }
 
 const styles = StyleSheet.create({
-
+  formContainer:{
+    marginTop: 50,
+    paddingHorizontal:40
+  },
   label: {
     fontSize: 20,
     marginBottom: 20,

@@ -12,13 +12,14 @@ import {CreditExpensesReducer, CreditExpenseState} from './CreditExpensesReducer
 interface CreditExpensesProps extends CreditExpenseState {
   getCreditPayments: ({ pending }: {pending?: boolean | undefined;}) => Promise<void>;
   setActualCreditExpense: (creditExpense: CreditPayment) => void;
-  updateCreditExpense: (body: UpdateExpense) => Promise<void>;
-  removeCreditExpense: () => Promise<void>;
+  updateCreditExpense: (body: UpdateExpense) => Promise<string | undefined>;
+  removeCreditExpense: () => Promise<string | undefined>;
 }
 
 const initialValues:CreditExpenseState = {
   actualCreditExpense: null,
-  allCreditExpenses: []
+  allCreditExpenses: [],
+  isLoading: false,
 }
 
 
@@ -27,7 +28,7 @@ export const CreditExpensesContext = createContext({} as CreditExpensesProps)
 
 export const CreditExpensesProvider = ({children}:{children:JSX.Element | JSX.Element[]}) => {
 
-  const {showStatus, setSuccessStatus, setFailureStatus, handleConnectionFail} = useContext(RequestsStatusContext)
+  const {showNotification, handleConnectionFail} = useContext(RequestsStatusContext)
   const {token} = useContext(AuthContext)
   const {actualAccount} = useContext(AccountsContext)
   const {getLastExpenses, getPrincipalAmounts} = useContext(ExpensesContext)
@@ -44,7 +45,7 @@ export const CreditExpensesProvider = ({children}:{children:JSX.Element | JSX.El
         token,
         pending
       })
-      if(!existError(resp)){
+      if(!resp.error){
         dispatch({type: 'setCreditExpenses', payload:{creditExpenses: resp.credit_payments}})
       }
       
@@ -61,11 +62,7 @@ export const CreditExpensesProvider = ({children}:{children:JSX.Element | JSX.El
   const updateCreditExpense = async (body:UpdateExpense)=>{
     if(!token || !actualAccount || !state.actualCreditExpense) return;
 
-    showStatus({
-      failureMessage: 'No se pudo actualizar',
-      loadingMessage: 'Actualizando...',
-      successMessage: 'Actualizado'
-    })
+    startLoading()
 
     try {
       const resp:CreditPaymentResponse = await updateCreditPaymentsApi({
@@ -74,24 +71,25 @@ export const CreditExpensesProvider = ({children}:{children:JSX.Element | JSX.El
         idCreditPayment: state.actualCreditExpense.id,
         token
       })
-      if(!existError(resp)){
+      if(resp.error){
+        return resp.message
+      } else {
         dispatch({type:'updateCreditExpense', payload:{creditExpense:resp.credit_payment}})
-        setSuccessStatus()
+        showNotification('Actualizado')
       }
-      
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
   const removeCreditExpense = async ()=>{
     if(!token || !actualAccount || !state.actualCreditExpense) return;
 
-    showStatus({
-      failureMessage: 'No se pudo eliminar',
-      loadingMessage: 'Eliminando...',
-      successMessage: 'Eliminado'
-    })
+    startLoading()
 
     try {
       const resp:CreditPaymentResponse = await removeCreditPaymentsApi({
@@ -99,27 +97,31 @@ export const CreditExpensesProvider = ({children}:{children:JSX.Element | JSX.El
         idCreditPayment: state.actualCreditExpense.id,
         token
       })
-      if(!existError(resp)){
+      if(resp.error){
+        return resp.message
+      } else {
         dispatch({type:'removeCreditExpense', payload:{idCreditExpense:state.actualCreditExpense.id}})
         getPrincipalAmounts()
         getLastExpenses()
-        setSuccessStatus()
+        showNotification('Eliminado')
       }
-      
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
     }
-  }
-
-
-  const existError = (resp:GetCreditPayments | CreditPaymentResponse) => {
-    let existError = false;
-    if (resp.statusCode !== 200 && resp.message) {
-      setFailureStatus()
-      existError = true;
+    finally {
+      finishLoading()
     }
-    return existError;
   }
+
+
+  const startLoading = () => {
+		dispatch({ type: 'startLoading' });
+	};
+
+	const finishLoading = () => {
+		dispatch({ type: 'finishLoading' });
+	};
 
   return (
     <CreditExpensesContext.Provider

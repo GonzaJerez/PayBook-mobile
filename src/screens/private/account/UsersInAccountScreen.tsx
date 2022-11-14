@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext, useState} from 'react'
 import {View, StyleSheet} from 'react-native'
 import {NativeStackScreenProps} from '@react-navigation/native-stack'
 
@@ -8,23 +8,33 @@ import {AccountStackNavigation} from '../../../navigation/AccountNavigation'
 import {ValidRoles} from '../../../interfaces/ValidRoles'
 import {RowInfo} from '../../../components/item-lists/RowInfo'
 import {SimplePicker} from '../../../components/fields/SimplePicker'
-import {useUsersInAccount} from '../../../hooks/useUsersInAccount'
+import {AccountsContext} from '../../../context/accounts/AccountsContext'
+import {AuthContext} from '../../../context/auth/AuthContext'
+import {getRange} from '../../../helpers/getRange'
+import {ErrorField} from '../../../components/texts/ErrorField'
 
 
 interface Props extends NativeStackScreenProps<AccountStackNavigation, 'UsersInAccountScreen'> {}
 
 export const UsersInAccountScreen = ({navigation}: Props) => {
 
-  const {
-    actualAccount,
-    maxUsers,
-    user,
-    maxUsersSelected,
-    usersSelectedToDelete,
-    setMaxUsersSelected,
-    setUsersSelectedToDelete,
-    updateAccount
-  } = useUsersInAccount({navigation})
+  const {actualAccount, isLoading, updateUsersInAccount} = useContext(AccountsContext)
+  const {user} = useContext(AuthContext)
+
+  const [error, setError] = useState<string>()
+  const [usersSelectedToDelete, setUsersSelectedToDelete] = useState<string[]>([])
+  const [maxUsersSelected, setMaxUsersSelected] = useState(String(actualAccount?.max_num_users) || '1')
+
+  const maxUsers = getRange(10, 10 - (actualAccount?.users.length || 0) - usersSelectedToDelete.length)
+
+  const updateAccount = async()=>{
+    const hasError = await updateUsersInAccount({max_num_users: +maxUsersSelected},usersSelectedToDelete)
+    if(hasError){
+      setError(hasError)
+    } else {
+      navigation.goBack()
+    }
+  }
 
   return (
     <View style={styles.container}>
@@ -50,11 +60,14 @@ export const UsersInAccountScreen = ({navigation}: Props) => {
           setUsersSelectedToDelete={setUsersSelectedToDelete}
         />
 
+        {(error) && (<ErrorField>{error}</ErrorField>)}
+
         {(user?.roles.includes(ValidRoles.ADMIN) || actualAccount?.admin_user.id === user?.id)
         && (
           <SubmitOrCancelButtons 
             onCancel={()=>navigation.goBack()}
             onSubmit={updateAccount}
+            isLoading={isLoading}
           />
         )}
       </View>

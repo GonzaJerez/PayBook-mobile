@@ -1,217 +1,250 @@
-import {createContext, useContext, useEffect, useReducer} from 'react';
-import {createAccountApi, getAccountsApi, joinToAccountApi, leaveAccountApi, pushoutApi, removeAccountApi, updateAccountApi} from '../../api/accounts-api';
-import {AccountResponse, CreateAccount, GetAccountsProps, UpdateAccount} from '../../interfaces/Account';
-import {AuthContext} from '../auth/AuthContext';
-import {RequestsStatusContext} from '../requests-status/RequestsStatusContext';
-import {AccountsReducer, AccountsState} from './AccountsReducer';
+import { createContext, useContext, useEffect, useReducer } from 'react';
+import {
+	createAccountApi,
+	getAccountsApi,
+	joinToAccountApi,
+	leaveAccountApi,
+	pushoutApi,
+	removeAccountApi,
+	updateAccountApi,
+} from '../../api/accounts-api';
+import {
+	AccountResponse,
+	CreateAccount,
+	GetAccountsProps,
+	UpdateAccount,
+} from '../../interfaces/Account';
+import { AuthContext } from '../auth/AuthContext';
+import { RequestsStatusContext } from '../requests-status/RequestsStatusContext';
+import { AccountsReducer, AccountsState } from './AccountsReducer';
 
 interface AccountsContextProps extends AccountsState {
-  changeActualAccount: (idAccount: string) => void;
-  createAccount: (body: CreateAccount) => Promise<void>;
-  updateAccount: (body: UpdateAccount) => Promise<void>;
-  updateUsersInAccount: (body: UpdateAccount, uids: string[]) => Promise<void>;
-  joinToAccount: (access_key: string) => Promise<void>;
-  leaveAccount: () => Promise<void>;
-  removeAccount: () => Promise<void>;
+	changeActualAccount: (idAccount: string) => void;
+	createAccount: (body: CreateAccount) => Promise<string | undefined>;
+	updateAccount: (body: UpdateAccount) => Promise<string | undefined>;
+	updateUsersInAccount: (
+		body: UpdateAccount,
+		uids: string[]
+	) => Promise<string | undefined>;
+	joinToAccount: (access_key: string) => Promise<string | undefined>;
+	leaveAccount: () => Promise<string | undefined>;
+	removeAccount: () => Promise<string | undefined>;
 }
 
+const initialValues: AccountsState = {
+	actualAccount: null,
+	allAccounts: [],
+	isLoading: false,
+};
 
-const initialValues:AccountsState = {
-  actualAccount: null,
-  allAccounts: [],
-  isLoading: false
-}
+export const AccountsContext = createContext({} as AccountsContextProps);
 
+export const AccountsProvider = ({
+	children,
+}: {
+	children: JSX.Element | JSX.Element[];
+}) => {
+	const { token } = useContext(AuthContext);
+	const { showNotification, handleConnectionFail } = useContext(
+		RequestsStatusContext
+	);
 
-export const AccountsContext = createContext({} as AccountsContextProps)
+	const [state, dispatch] = useReducer(AccountsReducer, initialValues);
 
+	useEffect(() => {
+		setAccounts();
+	}, []);
 
-export const AccountsProvider = ({children}:{children:JSX.Element | JSX.Element[]})=>{
+	const setAccounts = async () => {
+		if (!token) return;
+		try {
+			const resp: GetAccountsProps = await getAccountsApi(token);
+			if (!resp.message) {
+				dispatch({ type: 'setAccounts', payload: { accounts: resp.accounts } });
+			}
+		} catch (error) {
+			handleConnectionFail();
+		}
+	};
 
-  const {token} = useContext(AuthContext)
-  const {showStatus, setSuccessStatus, setFailureStatus, handleConnectionFail} = useContext(RequestsStatusContext)
+	const changeActualAccount = (idAccount: string) => {
+		dispatch({ type: 'changeActualAccount', payload: { idAccount } });
+	};
 
-  const [state, dispatch] = useReducer(AccountsReducer, initialValues)
-  
+	const createAccount = async (body: CreateAccount) => {
+		if (!token) return;
 
-  useEffect(()=>{
-    setAccounts()
-  },[])
+		startLoading();
 
-  const setAccounts = async()=>{
-    if(!token) return;
-    try {
-      const resp:GetAccountsProps = await getAccountsApi(token)
+		try {
+			const resp: AccountResponse = await createAccountApi(body, token);
+			if (resp.message) {
+				return resp.message;
+			} else {
+				dispatch({ type: 'createAccount', payload: { account: resp.account } });
+				showNotification('Cuenta creada');
+			}
+		} catch (error) {
+			handleConnectionFail();
+		} finally {
+			finishLoading();
+		}
+	};
 
-      if(!existError(resp)){
-        dispatch({type:'setAccounts', payload: {accounts: resp.accounts}})
-      }
+	const updateAccount = async (body: UpdateAccount) => {
+		if (!state.actualAccount || !token) return;
+
+		startLoading();
+
+		try {
+			const resp: AccountResponse = await updateAccountApi(
+				body,
+				state.actualAccount.id,
+				token
+			);
+      console.log(resp);
       
-    } catch (error) {
-      handleConnectionFail()
-    }
-  }
+			if (resp.message) {
+				return resp.message;
+			} else {
+				dispatch({ type: 'updateAccount', payload: { account: resp.account } });
+				showNotification('Cuenta actualizada');
+			}
+		} catch (error) {
+			handleConnectionFail();
+		} finally {
+			finishLoading();
+		}
+	};
 
+	const updateUsersInAccount = async (body: UpdateAccount, uids: string[]) => {
+		if (!state.actualAccount || !token) return;
 
-  const changeActualAccount = (idAccount:string) => {
-    dispatch({type:'changeActualAccount', payload:{idAccount}})
-  }
+		startLoading();
 
+		try {
+			const respUpdate: AccountResponse = await updateAccountApi(
+				body,
+				state.actualAccount.id,
+				token
+			);
+			const respPushout: AccountResponse = await pushoutApi(
+				uids,
+				state.actualAccount.id,
+				token
+			);
+			if (respPushout.statusCode !== 200) {
+				return respPushout.message;
+			} else if (respUpdate.statusCode !== 200) {
+				return respPushout.message;
+			} else {
+				dispatch({
+					type: 'updateAccount',
+					payload: { account: respPushout.account },
+				});
+				showNotification('Cuenta actualizada');
+			}
+		} catch (error) {
+			handleConnectionFail();
+		} finally {
+			finishLoading();
+		}
+	};
 
-  const createAccount = async(body:CreateAccount)=>{
-    if(!token) return;
+	const joinToAccount = async (access_key: string) => {
+		if (!state.actualAccount || !token) return;
 
-    showStatus({
-      failureMessage: 'No se pudo crear',
-      loadingMessage: 'Creando...',
-      successMessage: 'Cuenta creada'
-    })
+		startLoading();
 
-    try {
-      const resp:AccountResponse = await createAccountApi(body, token)
-      if(!existError(resp)){
-        dispatch({type:'createAccount', payload:{account:resp.account}})
-        setSuccessStatus()
-      }
+		try {
+			const resp: AccountResponse = await joinToAccountApi(access_key, token);
+			if (resp.message) {
+				return resp.message;
+			} else {
+				dispatch({ type: 'joinToAccount', payload: { account: resp.account } });
+				showNotification('Te uniste a la cuenta');
+			}
+		} catch (error) {
+			handleConnectionFail();
+		} finally {
+			finishLoading();
+		}
+	};
 
-    } catch (error) {
-      handleConnectionFail()
-    }
-  }
+	const leaveAccount = async () => {
+		if (!state.actualAccount || !token) return;
 
+		startLoading();
 
-  const updateAccount = async(body: UpdateAccount) => {
-    if(!state.actualAccount || !token) return
+		try {
+			const resp: AccountResponse = await leaveAccountApi(
+				state.actualAccount.id,
+				token
+			);
+			if (resp.message) {
+				return resp.message;
+			} else {
+				dispatch({
+					type: 'leaveAccount',
+					payload: { idAccount: state.actualAccount.id },
+				});
+				showNotification('Abandonaste la cuenta');
+			}
+		} catch (error) {
+			handleConnectionFail();
+		} finally {
+			finishLoading();
+		}
+	};
 
-    showStatus({
-      failureMessage: 'No se pudo actualizar',
-      loadingMessage: 'Actualizando...',
-      successMessage: 'Cuenta actualizada'
-    })
+	const removeAccount = async () => {
+		if (!state.actualAccount || !token) return;
 
-    try {
-      const resp:AccountResponse = await updateAccountApi(body, state.actualAccount.id, token)
-      if(!existError(resp)){
-        dispatch({type:'updateAccount', payload:{account: resp.account}})
-        setSuccessStatus()
-      }
-      
-    } catch (error) {
-      handleConnectionFail()
-    }
-  }
+		startLoading();
 
-  const updateUsersInAccount = async(body: UpdateAccount, uids:string[])=>{
-    if(!state.actualAccount || !token) return
+		try {
+			const resp: AccountResponse = await removeAccountApi(
+				state.actualAccount.id,
+				token
+			);
+			if (resp.message) {
+				return resp.message;
+			} else {
+				dispatch({
+					type: 'leaveAccount',
+					payload: { idAccount: state.actualAccount.id },
+				});
+				showNotification('Cuenta eliminada');
+			}
+		} catch (error) {
+			handleConnectionFail();
+		} finally {
+			finishLoading();
+		}
+	};
 
-    showStatus({
-      failureMessage: 'No se pudo actualizar',
-      loadingMessage: 'Actualizando...',
-      successMessage: 'Cuenta actualizada'
-    })
-    
-    try {
-      const respUpdate:AccountResponse = await updateAccountApi(body, state.actualAccount.id, token)
-      const respPushout:AccountResponse = await pushoutApi(uids, state.actualAccount.id, token)
+	const startLoading = () => {
+		dispatch({ type: 'startLoading' });
+	};
 
-      if(!existError(respUpdate) && !existError(respPushout)){
-        dispatch({type:'updateAccount', payload:{account:respPushout.account}})
-        setSuccessStatus()
-      }
+	const finishLoading = () => {
+		dispatch({ type: 'finishLoading' });
+	};
 
-
-    } catch (error) {
-      handleConnectionFail()
-    }
-  }
-
-  const joinToAccount = async(access_key:string)=>{
-    if(!state.actualAccount || !token) return;
-
-    showStatus({
-      failureMessage: 'No te pudiste unir',
-      loadingMessage: 'Uniendote...',
-      successMessage: 'Te uniste a la cuenta'
-    })
-
-    try {
-      const resp:AccountResponse = await joinToAccountApi(access_key, token)
-      if(!existError(resp)){
-        dispatch({type:'joinToAccount', payload:{account:resp.account}})
-        setSuccessStatus()
-      }
-
-    } catch (error) {
-      handleConnectionFail()
-    }
-  }
-
-  const leaveAccount = async ()=>{
-    if(!state.actualAccount || !token) return;
-
-    showStatus({
-      failureMessage: 'No pudiste abandonar correctamente',
-      loadingMessage: 'Abandonando cuenta...',
-      successMessage: 'Abandonaste la cuenta'
-    })
-
-    try {
-      const resp:AccountResponse = await leaveAccountApi(state.actualAccount.id, token)
-      if(!existError(resp)){
-        dispatch({type:'leaveAccount', payload:{idAccount: state.actualAccount.id}})
-        setSuccessStatus()
-      }
-
-    } catch (error) {
-      handleConnectionFail()
-    }
-  }
-
-  const removeAccount = async ()=>{
-    if(!state.actualAccount || !token) return;
-
-    showStatus({
-      failureMessage: 'No se pudo eliminar la cuenta',
-      loadingMessage: 'Eliminando cuenta...',
-      successMessage: 'Cuenta eliminada'
-    })
-
-    try {
-      const resp:AccountResponse = await removeAccountApi(state.actualAccount.id, token)
-      if(!existError(resp)){
-        dispatch({type:'leaveAccount', payload:{idAccount: state.actualAccount.id}})
-        setSuccessStatus()
-      }
-
-    } catch (error) {
-      handleConnectionFail()
-    }
-  }
-
-
-  const existError = (resp: AccountResponse | GetAccountsProps) => {
-    let existError = false;
-    if (resp.statusCode !== 200 && resp.message) {
-      setFailureStatus()
-      existError = true;
-    }
-    return existError;
-  }
-
-  return (
-    <AccountsContext.Provider 
-      value={{
-        ...state,
-        changeActualAccount,
-        createAccount,
-        updateAccount,
-        updateUsersInAccount,
-        joinToAccount,
-        leaveAccount,
-        removeAccount,
-      }}
-    >
-      {children}
-    </AccountsContext.Provider>
-  )
-}
+	return (
+		<AccountsContext.Provider
+			value={{
+				...state,
+				changeActualAccount,
+				createAccount,
+				updateAccount,
+				updateUsersInAccount,
+				joinToAccount,
+				leaveAccount,
+				removeAccount,
+			}}
+		>
+			{children}
+		</AccountsContext.Provider>
+	);
+};

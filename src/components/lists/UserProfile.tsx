@@ -28,7 +28,7 @@ export const UserProfile = () => {
 
   const {showAlert: showAlertDelete} = useAlertToConfirm({
     title: 'Eliminar usuario',
-    message: '¿Estás seguro que deseas eliminar esta cuenta de usuario? \n\nEsta opción no es reversible',
+    message: '¿Estás seguro que deseas eliminar esta cuenta de usuario? \n\nEsta opción no se puede deshacer.',
     onCancel: () => {},
     onConfirm: deleteUser,
     textToConfirm: 'Eliminar cuenta'

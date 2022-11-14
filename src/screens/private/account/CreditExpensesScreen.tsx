@@ -10,7 +10,7 @@ import {CreditPayment} from '../../../interfaces/CreditExpenses'
 
 interface Props extends NativeStackScreenProps<AccountStackNavigation,'CreditExpensesScreen'>{}
 
-export const CreditExpensesScreen = ({navigation,route}:Props) => {
+export const CreditExpensesScreen = ({navigation}:Props) => {
 
   const {allCreditExpenses, getCreditPayments, setActualCreditExpense} = useContext(CreditExpensesContext)
 

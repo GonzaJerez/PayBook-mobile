@@ -1,5 +1,5 @@
-import React, {useContext, useEffect} from 'react'
-import {View, StyleSheet} from 'react-native'
+import React, {useContext, useEffect, useState} from 'react'
+import {View, StyleSheet, ActivityIndicator} from 'react-native'
 import {NativeStackScreenProps} from '@react-navigation/native-stack'
 
 import {OptionsButton} from '../../../components/buttons/OptionsButton'
@@ -9,17 +9,25 @@ import {CreditExpensesContext} from '../../../context/credit-expenses/CreditExpe
 import {currencyFormat} from '../../../helpers/currencyFormat'
 import {AccountStackNavigation} from '../../../navigation/AccountNavigation'
 import {useAlertToConfirm} from '../../../hooks/useAlertToConfirm'
+import {ThemeContext} from '../../../context/theme/ThemeContext'
+import {ErrorField} from '../../../components/texts/ErrorField'
 
 
 interface Props extends NativeStackScreenProps<AccountStackNavigation, 'DetailCreditExpenseScreen'> {}
 
 export const DetailCreditExpenseScreen = ({navigation}: Props) => {
 
-  const {actualCreditExpense, removeCreditExpense} = useContext(CreditExpensesContext)
+  const {actualCreditExpense, isLoading, removeCreditExpense} = useContext(CreditExpensesContext)
+  const {theme} = useContext(ThemeContext)
+  const [error, setError] = useState<string>()
 
-  const toDelete = ()=>{
-    navigation.goBack();
-    removeCreditExpense();
+  const toDelete = async()=>{
+    const errorMessage = await removeCreditExpense();
+    if(errorMessage){
+      setError(errorMessage)
+    } else {
+      navigation.goBack();
+    }
   }
 
   const {showAlert} = useAlertToConfirm({
@@ -63,6 +71,8 @@ export const DetailCreditExpenseScreen = ({navigation}: Props) => {
       title='Cuotas pagadas'
     >
       <View style={styles.dataContainer}>
+        {(isLoading) && (<ActivityIndicator color={theme.colors.primary} style={styles.spinner}/>)}
+        {(error) && (<ErrorField>{error}</ErrorField>)}
         <RowInfo
           label='Coutas totales'
           value={String(actualCreditExpense?.installments)}
@@ -97,6 +107,8 @@ export const DetailCreditExpenseScreen = ({navigation}: Props) => {
 const styles = StyleSheet.create({
   dataContainer: {
     marginTop: 20
+  },
+  spinner:{
+    marginTop:10
   }
-
 })

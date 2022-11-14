@@ -10,15 +10,16 @@ import {CategoriesReducer, CategoriesState} from './CategoriesReducer';
 interface CategoriesContextProps extends CategoriesState {
   getCategories: () => Promise<void>;
   setActualCategory: (category: Category | null) => void;
-  createCategory: (body: CreateCategory) => Promise<void>;
-  updateCategory: (body: UpdateCategory) => Promise<void>;
-  removeCategory: () => Promise<void>;
+  createCategory: (body: CreateCategory) => Promise<string | undefined>
+  updateCategory: (body: UpdateCategory) => Promise<string | undefined>;
+  removeCategory: () => Promise<string | undefined>;
   updateStateActualCategory: (category: Category) => void;
 }
 
 const initialValues:CategoriesState = {
   actualCategory: null,
-  allCategories: []
+  allCategories: [],
+  isLoading: false,
 }
 
 
@@ -28,7 +29,7 @@ export const CategoriesContext = createContext({} as CategoriesContextProps)
 export const CategoriesProvider = ({children}:{children:JSX.Element | JSX.Element[]})=>{
 
   const {token} = useContext(AuthContext)
-  const {showStatus, setSuccessStatus, setFailureStatus, handleConnectionFail} = useContext(RequestsStatusContext)
+  const {showNotification, handleConnectionFail} = useContext(RequestsStatusContext)
   const {actualAccount} = useContext(AccountsContext)
 
   const [state, dispatch] = useReducer(CategoriesReducer, initialValues)
@@ -36,14 +37,18 @@ export const CategoriesProvider = ({children}:{children:JSX.Element | JSX.Elemen
 
   const getCategories = async ()=>{
     if(!token || !actualAccount) return;
+    startLoading()
     try {
       const resp:GetCategoriesProps = await getCategoriesApi(actualAccount.id,token)
-      if(!existError(resp)){
+      if(!resp.error){
         dispatch({type:'getCategories', payload:{categories: resp.categories}})
       }
-
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
@@ -54,63 +59,66 @@ export const CategoriesProvider = ({children}:{children:JSX.Element | JSX.Elemen
   const createCategory = async (body:CreateCategory)=>{
     if(!token || !actualAccount) return;
     
-    showStatus({
-      failureMessage:'No se pudo crear categoría',
-      loadingMessage: 'Creando...',
-      successMessage: 'Categoría creada'
-    })
+    startLoading()
 
     try {
       const resp:CategoryResponse = await createCategoryApi(body, actualAccount.id,token)
-      if(!existError(resp)){
+      if(resp.error) {
+        return resp.message
+      } else {
         dispatch({type:'createCategory', payload:{category: resp.category}})
-        setSuccessStatus()
+        showNotification('Categoría creada')
       }
-
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
   const updateCategory = async (body:UpdateCategory)=>{
     if(!token || !actualAccount || !state?.actualCategory) return;
 
-    showStatus({
-      failureMessage:'No se pudo actualizar categoría',
-      loadingMessage: 'Actualizando...',
-      successMessage: 'Categoría actualizada'
-    })
+    startLoading()
 
     try {
       const resp:CategoryResponse = await updateCategoryApi(actualAccount.id, body, state?.actualCategory?.id,token )
-      if(!existError(resp)){
+      if(resp.error){
+        return resp.message
+      } else{
         updateStateActualCategory(resp.category)
-        setSuccessStatus()
+        showNotification('Categoría actualizada')
       }
-
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
   const removeCategory = async ()=>{
     if(!token || !actualAccount || !state?.actualCategory) return;
 
-    showStatus({
-      failureMessage:'No se pudo eliminar categoría',
-      loadingMessage: 'Eliminando...',
-      successMessage: 'Categoría eliminada'
-    })
+    startLoading()
 
     try {
       const resp:CategoryResponse = await removeCategoryApi(actualAccount.id, state?.actualCategory?.id,token )
-      if(!existError(resp)){
+      if(resp.error){
+        return resp.message;
+      } else {
         dispatch({type:'removeCategory', payload:{idCategory:state.actualCategory.id}})
-        setSuccessStatus()
+        showNotification('Categoría eliminada')
       }
-
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
@@ -119,15 +127,14 @@ export const CategoriesProvider = ({children}:{children:JSX.Element | JSX.Elemen
     dispatch({type:'updateCategory', payload:{category}})
   }
 
+  
+  const startLoading = () => {
+		dispatch({ type: 'startLoading' });
+	};
 
-  const existError = (resp: GetCategoriesProps | CategoryResponse) => {
-    let existError = false;
-    if (resp.statusCode !== 200 && resp.message) {
-      setFailureStatus()
-      existError = true;
-    }
-    return existError;
-  }
+	const finishLoading = () => {
+		dispatch({ type: 'finishLoading' });
+	};
 
 
   return (

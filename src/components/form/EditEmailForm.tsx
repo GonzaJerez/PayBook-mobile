@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useState} from 'react'
 import {View, StyleSheet} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
@@ -10,15 +10,22 @@ import {SubmitOrCancelButtons} from '../buttons/SubmitOrCancelButtons'
 import {UserStackNavigation} from '../../navigation/UserNavigation'
 import {FixedValue} from './FixedValueField'
 import {AuthContext} from '../../context/auth/AuthContext'
+import {ErrorField} from '../texts/ErrorField'
 
 export const EditEmailForm = () => {
 
-  const {user,updateUser} = useContext(AuthContext)
+  const {user, isLoading, updateUser} = useContext(AuthContext)
   const {goBack} = useNavigation<NativeStackNavigationProp<UserStackNavigation>>()
 
-  const updateEmail = (newEmail:string)=>{
-    goBack()
-    updateUser({email:newEmail})
+  const [error, setError] = useState<string>()
+
+  const updateEmail = async(newEmail:string)=>{
+    const hasError = await updateUser({email:newEmail})
+    if(hasError){
+      setError(hasError)
+    } else {
+      goBack()
+    }
   }
 
   return (
@@ -58,10 +65,11 @@ export const EditEmailForm = () => {
             type='email-address'
             name='email2'
           />
-
+          {(error) && (<ErrorField>{error}</ErrorField>)}
           <SubmitOrCancelButtons
             onSubmit={handleSubmit}
             onCancel={goBack}
+            isLoading={isLoading}
             disable={(Object.keys(errors).length > 0 || Object.keys(touched).length === 0)}
           />
         </View>

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import {View, StyleSheet, Text} from 'react-native'
 import {Formik} from 'formik'
 import * as Yup from 'yup'
@@ -16,17 +16,19 @@ import {TabBarNavigation} from '../../navigation/TabNavigation'
 import {InlineFixedValue} from '../fields/InlineFixedValue'
 import {CreditExpensesContext} from '../../context/credit-expenses/CreditExpensesContext'
 import {EmptyData} from '../texts/EmptyData'
+import {ErrorField} from '../texts/ErrorField'
 
 
 export const PayInstallmentForm = () => {
 
   const {navigate} = useNavigation<NativeStackNavigationProp<TabBarNavigation>>()
 
-  const {payInstallment} = useContext(ExpensesContext)
+  const {isLoading, payInstallment} = useContext(ExpensesContext)
   const {allCreditExpenses, getCreditPayments} = useContext(CreditExpensesContext)
+  const [error, setError] = useState<string>()
 
   useEffect(()=>{
-    getCreditPayments({pending:false})
+    getCreditPayments({})
   },[])
 
 
@@ -35,9 +37,13 @@ export const PayInstallmentForm = () => {
     navigate('HomeScreen')
   }
 
-  const toPayInstallment = (resetForm: () => void, values: PayInstallment, idCreditPayment: string) => {
-    payInstallment(values, idCreditPayment)
-    cleanForm(resetForm)
+  const toPayInstallment = async(resetForm: () => void, values: PayInstallment, idCreditPayment: string) => {
+    const errorMessage = await payInstallment(values, idCreditPayment)
+    if(errorMessage){
+      setError(errorMessage)
+    } else {
+      cleanForm(resetForm)
+    }
   }
 
   if(allCreditExpenses.length === 0){
@@ -108,11 +114,12 @@ export const PayInstallmentForm = () => {
           <TextboxField
             name='description'
           />
-
+          {(error) && (<ErrorField>{error}</ErrorField>)}
           <SubmitOrCancelButtons
             onSubmit={handleSubmit}
             onCancel={() => cleanForm(resetForm)}
             disable={(Object.keys(errors).length > 0)}
+            isLoading={isLoading}
           />
         </View>
       )}

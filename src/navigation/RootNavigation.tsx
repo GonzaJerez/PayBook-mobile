@@ -23,7 +23,7 @@ export function RootNavigation() {
 
   const {theme} = useContext(ThemeContext)
   const {status} = useContext(AuthContext)
-  const {statusVisible, failureMessage, loadingMessage, successMessage, isConnectionFailed, clearConnectionFailure} = useContext(RequestsStatusContext)
+  const {showingNotification ,isConnectionFailed, clearConnectionFailure} = useContext(RequestsStatusContext)
 
   if (status === 'checking') {
     return (
@@ -48,12 +48,8 @@ export function RootNavigation() {
       theme={theme}
     >
 
-      {(statusVisible) && (
-        <StatusNotification 
-          failureMessage={failureMessage}
-          loadingMessage={loadingMessage}
-          successMessage={successMessage}
-        />
+      {(showingNotification) && (
+        <StatusNotification />
       )}
 
       <Stack.Navigator

@@ -1,6 +1,6 @@
 import {Ionicons} from '@expo/vector-icons';
 import React, {useContext} from 'react'
-import {Text, TouchableOpacity, StyleSheet, ViewStyle} from 'react-native'
+import {Text, TouchableOpacity, StyleSheet, ViewStyle, ActivityIndicator} from 'react-native'
 
 import {ThemeContext} from '../../context/theme/ThemeContext';
 
@@ -8,10 +8,11 @@ interface Props {
   label?: string;
   fontSize?: number;
   style?: ViewStyle;
+  isLoading?: boolean;
   onPress: () => void;
 }
 
-export const DeleteButton = ({label, fontSize, style, onPress}: Props) => {
+export const DeleteButton = ({label, fontSize, isLoading, style, onPress}: Props) => {
 
   const {theme} = useContext(ThemeContext)
 
@@ -19,20 +20,27 @@ export const DeleteButton = ({label, fontSize, style, onPress}: Props) => {
     <TouchableOpacity
       style={[styles.container, {...style}]}
       onPress={onPress}
+      disabled={isLoading}
     >
-      <Text
-        style={[
-          styles.textButton,
-          {color: theme.delete, fontSize}
-        ]}
-      >
-        {label}
-      </Text>
-      <Ionicons 
-        name='trash-outline'
-        size={20}
-        color={theme.delete}
-      />
+      {(isLoading)
+        ? (<ActivityIndicator color={theme.delete} />)
+        : (
+          <>
+            <Text
+              style={[
+                styles.textButton,
+                {color: theme.delete, fontSize}
+              ]}
+            >
+              {label}
+            </Text>
+            <Ionicons 
+              name='trash-outline'
+              size={20}
+              color={theme.delete}
+            />
+          </>
+        )}
     </TouchableOpacity>
   )
 }

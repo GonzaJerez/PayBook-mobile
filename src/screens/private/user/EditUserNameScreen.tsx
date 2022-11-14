@@ -1,6 +1,6 @@
 import React, {useContext} from 'react'
 import { View, StyleSheet } from 'react-native'
-import {EditName} from '../../../components/form/EditName'
+import {EditNameField} from '../../../components/form/EditNameField'
 import {AuthContext} from '../../../context/auth/AuthContext'
 
 export const EditUserNameScreen = () => {
@@ -9,7 +9,7 @@ export const EditUserNameScreen = () => {
 
   return (
     <View style={styles.container}>
-      <EditName 
+      <EditNameField 
         label='usuario'
         initialValue={user?.fullName || ''}
         onSubmit={updateUser}
@@ -20,6 +20,6 @@ export const EditUserNameScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
 })

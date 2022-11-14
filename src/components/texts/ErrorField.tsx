@@ -20,6 +20,7 @@ export const ErrorField = ({children}:Props) => {
 const styles = StyleSheet.create({
   textError: {
     fontSize:12,
-    marginTop:5
+    marginTop:5,
+    alignSelf: 'center'
   }
 })

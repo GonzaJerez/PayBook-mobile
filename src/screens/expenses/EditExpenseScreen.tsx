@@ -4,13 +4,11 @@ import {KeyboardAvoidingView, ScrollView, StyleSheet} from 'react-native'
 import {HeaderBrand} from '../../components/brand/HeaderBrand'
 import {ExpenseForm} from '../../components/form/ExpenseForm'
 import {ExpensesContext} from '../../context/expenses/ExpensesContext'
-import {useExpenseActions} from '../../hooks/useExpenseActions'
 
 
 export const EditExpenseScreen = () => {
 
-  const {actualExpense} = useContext(ExpensesContext)
-  const {toUpdateExpense} = useExpenseActions()
+  const {actualExpense, updateExpense} = useContext(ExpensesContext)
 
   return (
     <KeyboardAvoidingView
@@ -28,7 +26,7 @@ export const EditExpenseScreen = () => {
             installments: actualExpense?.credit_payment?.installments || 1,
             subcategoryId: actualExpense?.subcategory.id || ''
           }}
-          onSubmit={toUpdateExpense}
+          onSubmit={updateExpense}
         />
 
       </ScrollView>

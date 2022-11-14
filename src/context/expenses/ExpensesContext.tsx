@@ -13,10 +13,10 @@ interface ExpensesContextProps extends ExpensesState {
   getLastExpenses: (querys?: PaginationQuerys) => Promise<void>;
   getAllExpenses: (querys?: PaginationQuerys) => Promise<{expenses: Expense[];} | undefined>;
   setActualExpense: (expense: Expense) => Promise<void>;
-  createExpense: (body: CreateExpense) => Promise<void>;
-  updateExpense: (body: UpdateExpense) => Promise<void>;
-  removeExpense: () => Promise<void>;
-  payInstallment: (body: PayInstallment, idCreditPayment: string) => Promise<void>;
+  createExpense: (body: CreateExpense) => Promise<string | undefined>;
+  updateExpense: (body: UpdateExpense) => Promise<string | undefined>;
+  removeExpense: () => Promise<string | undefined>;
+  payInstallment: (body: PayInstallment, idCreditPayment: string) => Promise<string | undefined>;
   getStatistics: (body?: FiltersStatisctics) => Promise<StatisticsResponse | undefined>
 }
 
@@ -29,7 +29,8 @@ const initialValues: ExpensesState = {
     totalAmountOnWeek: null,
     totalAmountOnDay: null,
     totalAmountFixedCostsMonthly: null
-  }
+  },
+  isLoading: false,
 }
 
 
@@ -38,7 +39,7 @@ export const ExpensesContext = createContext({} as ExpensesContextProps)
 
 export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Element[]}) => {
 
-  const {showStatus, setSuccessStatus, setFailureStatus, handleConnectionFail} = useContext(RequestsStatusContext)
+  const {showNotification, handleConnectionFail} = useContext(RequestsStatusContext)
   const {token} = useContext(AuthContext)
   const {actualAccount} = useContext(AccountsContext)
 
@@ -58,7 +59,7 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
         idAccount: actualAccount?.id,
         token
       })
-      if(!existError(resp)){
+      if(!resp.error){
         dispatch({type: 'setPrincipalAmounts', payload: {principalAmounts: resp}})
       }
 
@@ -77,7 +78,7 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
         token,
         querys
       })
-      if(!existError(resp)){
+      if(!resp.error){
         dispatch({type: 'setLastExpenses', payload: {lastExpenses: resp.expenses}})
       }
 
@@ -95,7 +96,7 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
         token,
         querys
       })
-      if(!existError(resp)){
+      if(!resp.error){
         return {
           expenses: resp.expenses
         }
@@ -110,11 +111,7 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
   const createExpense = async (body: CreateExpense) => {
     if (!token || !actualAccount) return;
 
-    showStatus({
-      failureMessage: 'No se pudo crear',
-      loadingMessage: 'Creando...',
-      successMessage: 'Gasto creado'
-    })
+    startLoading()
 
     try {
       const resp: ExpenseResponse = await createExpenseApi({
@@ -122,25 +119,26 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
         token,
         body,
       })
-      if(!existError(resp)){
+      if(resp.error){
+        return resp.message
+      } else {
         dispatch({type: 'createExpense', payload: {expense: resp.expense}})
-        setSuccessStatus()
+        showNotification('Nuevo gasto creado')
         getPrincipalAmounts()
       }
-
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
   const updateExpense = async (body: UpdateExpense) => {
     if (!token || !actualAccount || !state.actualExpense) return;
 
-    showStatus({
-      failureMessage: 'No se pudo actualizar',
-      loadingMessage: 'Actualizando...',
-      successMessage: 'Gasto actualizado'
-    })
+    startLoading()
 
     try {
       const resp: ExpenseResponse = await updateExpenseApi({
@@ -149,14 +147,19 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
         token,
         body,
       })
-      if(!existError(resp)){
+      if(resp.error){
+        return resp.message
+      } else {
         dispatch({type: 'updateExpense', payload: {expense: resp.expense}})
-        setSuccessStatus()
+        showNotification('Gasto actualizado')
         getPrincipalAmounts()
       }
-
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
@@ -164,26 +167,27 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
   const removeExpense = async () => {
     if (!token || !actualAccount || !state.actualExpense) return;
 
-    showStatus({
-      failureMessage: 'No se pudo eliminar',
-      loadingMessage: 'Eliminando...',
-      successMessage: 'Gasto eliminado'
-    })
+    startLoading()
 
     try {
-      const resp = await removeExpenseApi({
+      const resp:ExpenseResponse = await removeExpenseApi({
         idAccount: actualAccount.id,
         token,
         idExpense: state.actualExpense?.id,
       })
-      if(!existError(resp)){
+      if(resp.error){
+        return resp.message
+      } else {
         dispatch({type: 'removeExpense', payload: {expense: state.actualExpense}})
-        setSuccessStatus()
+        showNotification('Gasto eliminado')
         getPrincipalAmounts()
       }
-
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally{
+      finishLoading()
     }
   }
 
@@ -191,11 +195,7 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
   const payInstallment = async (body: PayInstallment, idCreditPayment: string) => {
     if (!token || !actualAccount) return;
 
-    showStatus({
-      failureMessage: 'No se pudo crear gasto',
-      loadingMessage: 'Creando gasto',
-      successMessage: 'Gasto creado'
-    })
+    startLoading()
 
     try {
       const resp: ExpenseResponse = await payInstallmentApi({
@@ -204,14 +204,19 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
         body,
         idCreditPayment
       })
-      if(!existError(resp)){
+      if(resp.error){
+        return resp.message;
+      } else {
         dispatch({type: 'createExpense', payload: {expense: resp.expense}})
-        setSuccessStatus()
+        showNotification('Cuota pagada')
         getPrincipalAmounts()
       }
-
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
@@ -225,7 +230,7 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
         token,
         body
       })
-      if(!existError(resp)){
+      if(!resp.error){
         return resp;
       }
 
@@ -239,17 +244,13 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
     dispatch({type: 'setExpense', payload: {expense}})
   }
 
+  const startLoading = () => {
+		dispatch({ type: 'startLoading' });
+	};
 
-  const existError = (resp: PrincipalAmountsResponse | GetExpenses | ExpenseResponse | StatisticsResponse) => {
-    let existError = false;
-    if (resp.statusCode !== 200 && resp.message) {
-      setFailureStatus()
-      existError = true;
-    }
-    return existError;
-  }
-
-
+	const finishLoading = () => {
+		dispatch({ type: 'finishLoading' });
+	};
 
   return (
     <ExpensesContext.Provider

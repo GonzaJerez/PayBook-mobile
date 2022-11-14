@@ -11,17 +11,16 @@ import {AuthReducer, AuthState} from './AuthReducer';
 
 
 interface AuthContextProps extends AuthState {
-  login: (body: LoginUser) => Promise<void>;
-  googleSignIn: (tokenGoogle: string) => Promise<void>;
-  register: (body: CreateUser) => Promise<void>;
-  updateUser: (body: UpdateUser) => Promise<void>;
-  deleteUser: () => Promise<void>;
+  login: (body: LoginUser) => Promise<string | undefined>;
+  googleSignIn: (tokenGoogle: string) => Promise<string | undefined>;
+  register: (body: CreateUser) => Promise<string | undefined>;
+  updateUser: (body: UpdateUser) => Promise<string | undefined>
+  deleteUser: () => Promise<string | undefined>;
   logout: () => Promise<false | undefined>;
   // logout: () => Promise<void>;
-  becomePremiumUser: (revenue_id: string) => Promise<void>;
-  removePremiumUser: () => Promise<void>;
-  checkPremium: () => Promise<void>;
-  cleanErrors: () => void;
+  becomePremiumUser: (revenue_id: string) => Promise<string | undefined>;
+  removePremiumUser: () => Promise<string | undefined>;
+  checkPremium: () => Promise<string | undefined>;
 }
 
 
@@ -31,18 +30,16 @@ export const initialState: AuthState = {
   token: null,
   status: 'checking',
   isConnectionFailed: false,
-  error: null
+  isLoading: false
 }
-
 
 
 export const AuthContext = createContext({} as AuthContextProps)
 
 
-
 export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}) => {
 
-  const {showStatus, setSuccessStatus, startLoading, finishLoading, handleConnectionFail} = useContext(RequestsStatusContext)
+  const {showNotification ,handleConnectionFail} = useContext(RequestsStatusContext)
 
   const [state, dispatch] = useReducer(AuthReducer, initialState)
 
@@ -73,8 +70,9 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
     startLoading()
     try {
       const resp: UserResponse = await loginApi(body)
-
-      if (!existError(resp)) {
+      if(resp.message){
+        return resp.message
+      } else {
         dispatch({type: 'login', payload: resp})
         await AsyncStorage.setItem('token', resp.token)
       }
@@ -92,8 +90,9 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
     startLoading()
     try {
       const resp: UserResponse = await googleLoginApi(tokenGoogle)
-
-      if (!existError(resp)) {
+      if(resp.message){
+        return resp.message
+      } else {
         dispatch({type: 'login', payload: resp})
         await AsyncStorage.setItem('token', resp.token)
       }
@@ -111,8 +110,9 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
     startLoading()
     try {
       const resp: UserResponse = await registerApi(body);
-
-      if (!existError(resp)) {
+      if(resp.message) {
+        return resp.message
+      } else {
         dispatch({type: 'login', payload: resp})
         await AsyncStorage.setItem('token', resp.token)
       }
@@ -144,82 +144,90 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
 
   const updateUser = async (body: UpdateUser) => {
     if (!state.user || !state.token) return;
-    showStatus({
-      failureMessage: 'No se pudo actualizar correctamente',
-      successMessage: 'Usuario actualizado',
-      loadingMessage: 'Actualizando...'
-    })
+    startLoading()
 
     try {
       const resp: UserResponse = await updateUserApi(body, state.user?.id, state.token)
-      if (!existError(resp)) {
+      if (resp.message) {
+        if(resp.message?.endsWith('already exists.')){
+          return 'El email ya se encuentra asociado a otra cuenta.';
+        } else {
+          return resp.message
+        }
+      } else {
         dispatch({type: 'updateUser', payload: {user: resp.user}})
-        setSuccessStatus()
+        showNotification('Usuario actualizado')
       }
     }
     catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
 
   const deleteUser = async () => {
     if (!state.user || !state.token) return;
-    showStatus({
-      failureMessage: 'No se pudo eliminar el usuario',
-      successMessage: 'Usuario eliminado',
-      loadingMessage: 'Eliminando usuario'
-    })
+    startLoading()
 
     try {
       const resp: UserResponse = await deleteUserApi(state.user?.id, state.token)
-      if (!existError(resp)) {
+      if(resp.message){
+        return resp.message
+      } else {
         logout()
-        setSuccessStatus()
+        showNotification('Usuario eliminado')
       }
     }
     catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
   const becomePremiumUser = async (revenue_id:string) => {
     if (!state.user || !state.token) return;
-    showStatus({
-      failureMessage: 'Ocurrio un error en la actualización',
-      successMessage: 'Ahora sos un usuario premium!',
-      loadingMessage: 'Actualizando a premium'
-    })
+    startLoading()
 
     try {
       const resp: UserResponse = await premiumUserApi(state.user?.id, state.token, {revenue_id})
-      if (!existError(resp)) {
-        setSuccessStatus()
+      if(resp.message){
+        return resp.message
+      } else {
         dispatch({type: 'updateUser', payload: {user: resp.user}})
+        showNotification('Usuario premium')
       }
     }
     catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
   const removePremiumUser = async () => {
     if (!state.user || !state.token) return;
-    showStatus({
-      failureMessage: 'Removiendo permisos',
-      successMessage: 'Dejaste de ser un usuario premium!',
-      loadingMessage: 'Ocurrio un error en la actualización'
-    })
+    startLoading()
 
     try {
       const resp : UserResponse= await removePremiumUserApi(state.user?.id, state.token)
-      if (!existError(resp)) {
-        setSuccessStatus()
+      if(resp.message){
+        return resp.message
+      } else {
         dispatch({type: 'updateUser', payload: {user: resp.user}})
+        showNotification('Dejaste de ser premium')
       }
     }
     catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
@@ -228,7 +236,9 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
     if(!state.token) return ;
     try {
       const resp: UserResponse = await checkPremiumApi(state.token)
-      if (!existError(resp)) {
+      if(resp.message){
+        return resp.message
+      } else {
         dispatch({type: 'updateUser', payload: {user: resp.user}})
       }
       
@@ -237,18 +247,12 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
     }
   }
 
-  const existError = (resp: UserResponse) => {
-    let existError = false;
-    if (resp.statusCode !== 200 && resp.message) {
-      dispatch({type: 'setError', payload: resp.message})
-      existError = true;
-    }
-    return existError;
+  const startLoading = ()=>{
+    dispatch({type:'startLoading'})
   }
 
-
-  const cleanErrors = () => {
-    dispatch({type: 'cleanErrors'})
+  const finishLoading = ()=>{
+    dispatch({type:'finishLoading'})
   }
 
 
@@ -256,7 +260,6 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
     <AuthContext.Provider
       value={{
         ...state,
-        cleanErrors,
         login,
         googleSignIn,
         logout,

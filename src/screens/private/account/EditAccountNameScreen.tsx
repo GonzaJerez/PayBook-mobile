@@ -1,6 +1,6 @@
 import React, {useContext} from 'react'
 import {View, StyleSheet} from 'react-native'
-import {EditName} from '../../../components/form/EditName'
+import {EditNameField} from '../../../components/form/EditNameField'
 import {AccountsContext} from '../../../context/accounts/AccountsContext'
 
 export const EditAccountNameScreen = () => {
@@ -9,7 +9,7 @@ export const EditAccountNameScreen = () => {
   
   return (
     <View style={styles.container}>
-      <EditName 
+      <EditNameField 
         label='cuenta'
         initialValue={actualAccount?.name || ''}
         onSubmit={updateAccount}

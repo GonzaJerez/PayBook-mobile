@@ -5,17 +5,15 @@ export interface AuthState {
   user: User | null,
   token: string | null;
   isConnectionFailed: boolean;
-  error: string | null;
+  isLoading: boolean;
 }
 
 type AuthActions =
   | {type: 'login', payload: UserResponse}
   | {type: 'logout'}
   | {type: 'updateUser', payload: {user: User}}
-  // | {type: 'deleteUser'}
-  | {type: 'premiumUser', payload: {user:User}}
-  | {type: 'setError', payload: string}
-  | {type: 'cleanErrors'}
+  | {type: 'startLoading'}
+  | {type: 'finishLoading'}
 
 
 export const AuthReducer = (state: AuthState, action: AuthActions): AuthState => {
@@ -28,7 +26,6 @@ export const AuthReducer = (state: AuthState, action: AuthActions): AuthState =>
         status: 'authenticated',
         user: action.payload.user,
         token: action.payload.token,
-        error:''
       }
 
     case 'logout':
@@ -37,7 +34,6 @@ export const AuthReducer = (state: AuthState, action: AuthActions): AuthState =>
         status: 'not-authenticated',
         user: null,
         token: null,
-        error: ''
       }
 
     case 'updateUser': {
@@ -47,23 +43,16 @@ export const AuthReducer = (state: AuthState, action: AuthActions): AuthState =>
       }
     }
 
-    // case 'premiumUser': {
-    //   return {
-    //     ...state,
-    //     user: {...action.payload.user, isPremium: true},
-    //   }
-    // }
-
-    case 'setError':
+    case 'startLoading':
       return {
         ...state,
-        error: action.payload
+        isLoading: true
       }
 
-    case 'cleanErrors':
+    case 'finishLoading':
       return {
         ...state,
-        error: null
+        isLoading: false
       }
 
     default:

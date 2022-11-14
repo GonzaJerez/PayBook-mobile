@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useState} from 'react'
 import {View, StyleSheet} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
@@ -9,19 +9,26 @@ import {UserStackNavigation} from '../../navigation/UserNavigation'
 import {SubmitOrCancelButtons} from '../buttons/SubmitOrCancelButtons'
 import {AuthContext} from '../../context/auth/AuthContext'
 import {PasswordField} from './PasswordField'
+import {ErrorField} from '../texts/ErrorField'
 
 
 export const EditPasswordForm = () => {
 
-  const {updateUser} = useContext(AuthContext)
+  const {updateUser, isLoading} = useContext(AuthContext)
   const {goBack} = useNavigation<NativeStackNavigationProp<UserStackNavigation>>()
+  const [error, setError] = useState<string>()
 
-  const editPassword = (actualPassword:string, newPassword:string)=>{
-    goBack()
-    updateUser({
+
+  const editPassword = async(actualPassword:string, newPassword:string)=>{
+    const hasError = await updateUser({
       password: actualPassword,
       newPassword
     })
+    if(hasError){
+      setError(hasError)
+    } else {
+      goBack()
+    }
   }
 
   return (
@@ -64,9 +71,11 @@ export const EditPasswordForm = () => {
             placeholder='········'
             name='newPassword2'
           />
+          {(error) && (<ErrorField>{error}</ErrorField>)}
           <SubmitOrCancelButtons
             onSubmit={handleSubmit}
             onCancel={goBack}
+            isLoading={isLoading}
             disable={(Object.keys(errors).length > 0 || Object.keys(touched).length === 0)}
           />
         </View>
