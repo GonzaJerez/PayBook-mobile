@@ -20,9 +20,10 @@ interface Props {
 export const ConfirmCodeForm = ({navigation, email}:Props) => {
 
   const {theme} = useContext(ThemeContext)
-  const {validateSecurityCode, passwordRecovery, error, isLoading} = useRecoveryAccount()
+  const {validateSecurityCode, passwordRecovery, isLoading} = useRecoveryAccount()
   const [timer, setTimer] = useState(60)
   const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
+  const [error, setError] = useState<string>()
 
   const initTimer = ()=>{
     clearInterval(intervalId)
@@ -44,9 +45,12 @@ export const ConfirmCodeForm = ({navigation, email}:Props) => {
   },[timer])
 
   const onSubmit = async(code:string)=>{
-    const res = await validateSecurityCode(email, code)
-    if(!res?.error)
+    const errorMessage = await validateSecurityCode(email, code)
+    if(errorMessage){
+      setError(errorMessage)
+    } else {
       navigation.navigate('UpdatePasswordScreen', {email})
+    }
   }
 
   const onResendEmailWithCode = async()=>{

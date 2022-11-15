@@ -9,6 +9,7 @@ import {SubcategoriesContext} from '../../../context/subcategories/Subcategories
 import {UpdateSubcategory} from '../../../interfaces/Subcategory'
 import {useAlertToConfirm} from '../../../hooks/useAlertToConfirm'
 import {EditNameField} from '../../../components/form/EditNameField'
+import {ErrorField} from '../../../components/texts/ErrorField'
 
 
 interface Props extends NativeStackScreenProps<AccountStackNavigation,'EditCategoryScreen'>{}
@@ -73,6 +74,7 @@ export const EditCategoryScreen = ({navigation,route}:Props) => {
         style={styles.deleteButton}
         isLoading={isLoadingCategory || isLoadingSubcategory}
       />
+      {(error) && (<ErrorField>{error}</ErrorField>)}
     </View>
   )
 }

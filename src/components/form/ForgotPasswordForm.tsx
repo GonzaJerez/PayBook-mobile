@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useState} from 'react'
 import {ActivityIndicator, StyleSheet} from 'react-native'
 import {Formik} from 'formik'
 import * as Yup from 'yup'
@@ -20,12 +20,16 @@ interface Props {
 export const ForgotPasswordForm = ({navigation}: Props) => {
 
   const {theme} = useContext(ThemeContext)
-  const {passwordRecovery, error, isLoading} = useRecoveryAccount()
+  const {passwordRecovery, isLoading} = useRecoveryAccount()
+  const [error, setError] = useState<string>()
 
   const onSubmit = async(email:string)=>{
-    const res = await passwordRecovery(email);
-    if(!res?.error)
+    const errorMessage = await passwordRecovery(email);
+    if(errorMessage){
+      setError(errorMessage)
+    } else {
       navigation.navigate('ConfirmCodeEmailScreen', {email})
+    }
   }
 
   return (

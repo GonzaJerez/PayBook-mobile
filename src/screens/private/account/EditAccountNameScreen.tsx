@@ -5,7 +5,7 @@ import {AccountsContext} from '../../../context/accounts/AccountsContext'
 
 export const EditAccountNameScreen = () => {
 
-  const {actualAccount, updateAccount} = useContext(AccountsContext)
+  const {actualAccount, isLoading, updateAccount} = useContext(AccountsContext)
   
   return (
     <View style={styles.container}>
@@ -13,6 +13,7 @@ export const EditAccountNameScreen = () => {
         label='cuenta'
         initialValue={actualAccount?.name || ''}
         onSubmit={updateAccount}
+        isLoading={isLoading}
       />
     </View>
   )

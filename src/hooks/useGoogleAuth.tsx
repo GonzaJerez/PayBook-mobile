@@ -1,11 +1,10 @@
-import {useContext, useEffect, useState} from 'react';
+import {useContext, useEffect} from 'react';
 // Google
 import * as WebBrowser from 'expo-web-browser';
 import * as GoogleSignIn from 'expo-auth-session/providers/google';
 import Constants from 'expo-constants';
 
 import {AuthContext} from '../context/auth/AuthContext';
-import {Alert} from 'react-native';
 
 
 const GOOGLE_EXPO_CLIENT = Constants?.manifest?.extra?.googleExpoId

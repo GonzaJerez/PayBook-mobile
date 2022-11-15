@@ -5,9 +5,8 @@ import {ForgotPasswordResponse} from '../interfaces/Auth'
 
 export const useRecoveryAccount = ()=>{
 
-  const {handleConnectionFail, showStatus, setSuccessStatus, setFailureStatus} = useContext(RequestsStatusContext)
+  const {showNotification, handleConnectionFail} = useContext(RequestsStatusContext)
 
-  const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
   const passwordRecovery = async (email:string) => {
@@ -16,12 +15,8 @@ export const useRecoveryAccount = ()=>{
       const resp:ForgotPasswordResponse = await passwordRecoveryApi({email})
 
       if (resp.error) {
-        setError(resp.message)
-      } else {
-        setError('');
+        return resp.message
       }
-
-      return {error: resp.error}
       
     } catch (error) {
       handleConnectionFail()
@@ -36,12 +31,8 @@ export const useRecoveryAccount = ()=>{
     try {
       const resp:ForgotPasswordResponse = await validateSecurityCodeApi({email, code})
       if (resp.error) {
-        setError(resp.message)
-      } else {
-        setError('');
+        return resp.message;
       }
-
-      return {error: resp.error}
       
     } catch (error) {
       handleConnectionFail()
@@ -52,31 +43,27 @@ export const useRecoveryAccount = ()=>{
   }
 
   const renewPassword = async (email:string, password: string) => {
-    showStatus({
-      failureMessage: 'No se pudo actualizar la contraseña. Vuelve a intentarlo más tarde',
-      loadingMessage: 'Actualizando...',
-      successMessage: 'Contraseña actualizada.'
-    })
+    setIsLoading(true)
     try {
       const resp:ForgotPasswordResponse = await renewPasswordApi({email, password})
       console.log(resp);
       
-      if (!resp.error) {
-        setSuccessStatus()
+      if (resp.error) {
+        return resp.message;
       } else {
-        setError(resp.message)
-        setFailureStatus()
+        showNotification('Contraseña actualizada')
       }
 
-      return {error: resp.error}
-      
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      setIsLoading(false)
     }
   }
 
   return {
-    error,
     isLoading,
     passwordRecovery,
     validateSecurityCode,

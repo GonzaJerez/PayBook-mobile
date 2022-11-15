@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native'
-import React, {useContext} from 'react'
+import React, {useContext, useState} from 'react'
 import {Formik} from 'formik'
 import * as Yup from 'yup'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
@@ -21,13 +21,18 @@ const maxUsersAllowed = getRange(MAX_USERS_IN_ACCOUNTS)
 
 export const CreateAccountForm = () => {
 
-  const {createAccount, isLoading, error} = useContext(AccountsContext)
+  const {createAccount, isLoading} = useContext(AccountsContext)
   const {goBack} = useNavigation<NativeStackNavigationProp<NewAccountTopTabNavigation>>()
+  const [error, setError] = useState<string>()
 
 
-  const toCreateAccount = (values:CreateAccount)=>{
-    goBack();
-    createAccount(values)
+  const toCreateAccount = async(values:CreateAccount)=>{
+    const errorMessage = await createAccount(values)
+    if(errorMessage){
+      setError(errorMessage)
+    } else {
+      goBack();
+    }
   }
 
   return (

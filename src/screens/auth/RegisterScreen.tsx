@@ -3,13 +3,10 @@ import { StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-na
 
 import {QuestionToNavigate} from '../../components/buttons/QuestionToNavigate'
 import {RegisterForm} from '../../components/form/RegisterForm'
-import {NativeStackScreenProps} from '@react-navigation/native-stack'
-import {AuthStackNavigator} from '../../navigation/AuthNavigation'
 import {HeaderBrand} from '../../components/brand/HeaderBrand'
 
-interface Props extends NativeStackScreenProps<AuthStackNavigator,'RegisterScreen'>{}
 
-export const RegisterScreen = ({navigation}:Props) => {
+export const RegisterScreen = () => {
 
   return (
     <KeyboardAvoidingView
@@ -27,8 +24,7 @@ export const RegisterScreen = ({navigation}:Props) => {
 
         <QuestionToNavigate 
           label='¿Ya estás registrado?' 
-          navigateTo='LoginScreen' 
-          navigation={navigation}
+          navigateTo='LoginScreen'
         />
 
       </ScrollView>

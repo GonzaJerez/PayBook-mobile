@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useState} from 'react'
 import {View, StyleSheet} from 'react-native'
 import {Formik} from 'formik'
 import * as Yup from 'yup'
@@ -8,12 +8,19 @@ import {PasswordField} from './PasswordField'
 import {PrimaryButton} from '../buttons/PrimaryButton'
 import {AuthContext} from '../../context/auth/AuthContext'
 import {ErrorRequest} from '../texts/ErrorRequest'
-import {RequestsStatusContext} from '../../context/requests-status/RequestsStatusContext'
+import {CreateUser} from '../../interfaces/User'
 
 export const RegisterFields = () => {
 
-  const {isLoading} = useContext(RequestsStatusContext)
-  const {error, register} = useContext(AuthContext)
+  const {isLoading, register} = useContext(AuthContext)
+  const [error, setError] = useState<string>()
+
+  const onRegister = async(values:CreateUser)=>{
+    const errorMessage = await register(values)
+    if(errorMessage){
+      setError(errorMessage)
+    }
+  }
 
   return (
     <Formik
@@ -24,7 +31,7 @@ export const RegisterFields = () => {
         password1: '',
         password2: ''
       }}
-      onSubmit={(values) => register(values)}
+      onSubmit={onRegister}
       validationSchema={
         Yup.object({
           fullName: Yup

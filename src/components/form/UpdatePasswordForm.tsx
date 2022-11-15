@@ -1,5 +1,5 @@
 import { ActivityIndicator, StyleSheet } from 'react-native';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -21,11 +21,16 @@ interface Props {
 
 export const UpdatePasswordForm = ({ navigation, email }: Props) => {
 	const { theme } = useContext(ThemeContext);
-	const { renewPassword, error, isLoading } = useRecoveryAccount();
+	const { renewPassword, isLoading } = useRecoveryAccount();
+	const [error, setError] = useState<string>()
 
 	const onSubmit = async (password: string) => {
-		const res = await renewPassword(email, password);
-		if (!res?.error) navigation.navigate('LoginScreen');
+		const errorMessage = await renewPassword(email, password);
+		if (errorMessage){
+			setError(errorMessage)
+		} else {
+			navigation.navigate('LoginScreen');
+		}
 	};
 
 	return (

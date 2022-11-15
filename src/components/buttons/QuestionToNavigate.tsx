@@ -1,27 +1,26 @@
 import React, {useContext} from 'react'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 
-import { View, Text, StyleSheet, Dimensions } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import {ThemeContext} from '../../context/theme/ThemeContext'
 import {AuthStackNavigator} from '../../navigation/AuthNavigation'
 import {TertiaryButton} from './TertiaryButton'
-import {AuthContext} from '../../context/auth/AuthContext'
+import {useNavigation} from '@react-navigation/native'
 
 
 interface Props {
   label:  string;
-  navigateTo: keyof AuthStackNavigator;
-  navigation: NativeStackNavigationProp<AuthStackNavigator, any>
+  navigateTo: 'LoginScreen' | 'RegisterScreen';
 }
 
-export const QuestionToNavigate = ({label, navigation, navigateTo}:Props) => {
+export const QuestionToNavigate = ({label, navigateTo}:Props) => {
   
   const {theme} = useContext(ThemeContext)
-  const {cleanErrors} = useContext(AuthContext)
+
+  const {navigate} = useNavigation<NativeStackNavigationProp<AuthStackNavigator>>()
 
   const changeScreen = ()=>{
-    navigation.navigate(navigateTo)
-    cleanErrors()
+    navigate(navigateTo)
   }
 
   return (

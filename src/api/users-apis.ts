@@ -2,11 +2,6 @@ import {UpdateUser} from '../interfaces/User';
 import {baseApi} from './baseApi';
 
 
-interface BecomePremiumProps {
-  id_subcription: string;
-}
-
-
 export const updateUserApi = async(body:UpdateUser, uid:string, token:string) =>{
   const resp = await baseApi({
     endpoint: `/users/${uid}`,

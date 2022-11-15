@@ -27,9 +27,8 @@ export const LoginScreen = ({navigation}:Props) => {
         <LoginForm navigation={navigation}/>
 
         <QuestionToNavigate 
-          label='¿Todavía no estás registrado?' 
+          label='¿Todavía no estás registrado?'
           navigateTo='RegisterScreen' 
-          navigation={navigation}
         />
 
       </ScrollView>

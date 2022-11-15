@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useState} from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 import {Formik} from 'formik'
 import * as Yup from 'yup'
@@ -8,12 +8,20 @@ import {PasswordField} from './PasswordField'
 import {PrimaryButton} from '../buttons/PrimaryButton'
 import {AuthContext} from '../../context/auth/AuthContext'
 import {ErrorRequest} from '../texts/ErrorRequest'
-import {RequestsStatusContext} from '../../context/requests-status/RequestsStatusContext'
+import {LoginUser} from '../../interfaces/Auth'
 
 export const LoginFields = () => {
 
-  const {error,login} = useContext(AuthContext)
-  const {isLoading} = useContext(RequestsStatusContext)
+  const {login, isLoading} = useContext(AuthContext)
+
+  const [error, setError] = useState<string>()
+
+  const onLogin = async(values:LoginUser)=>{
+    const errorMessage = await login(values)
+    if(errorMessage){
+      setError(errorMessage)
+    }
+  }
 
   return (
     <Formik
@@ -21,9 +29,7 @@ export const LoginFields = () => {
         email: '',
         password: ''
       }}
-      onSubmit={(values)=>{
-        login(values)
-      }}
+      onSubmit={onLogin}
       validationSchema={
         Yup.object({
           email: Yup

@@ -5,7 +5,7 @@ import {AuthContext} from '../../../context/auth/AuthContext'
 
 export const EditUserNameScreen = () => {
 
-  const {user, updateUser} = useContext(AuthContext)
+  const {user, isLoading, updateUser} = useContext(AuthContext)
 
   return (
     <View style={styles.container}>
@@ -13,6 +13,7 @@ export const EditUserNameScreen = () => {
         label='usuario'
         initialValue={user?.fullName || ''}
         onSubmit={updateUser}
+        isLoading={isLoading}
       />
     </View>
   )
