@@ -49,9 +49,10 @@ export const ExpensesReducer = (
 			return {
 				...state,
 				actualExpense: null,
-				lastExpenses: [...state.lastExpenses, action.payload.expense].sort(
-					(a, b) => (a.complete_date < b.complete_date ? 1 : -1)
-				),
+				lastExpenses: [...state.lastExpenses, action.payload.expense]
+					.sort(
+						(a, b) => (a.complete_date < b.complete_date ? 1 : -1)
+					),
 			};
 
 		case 'updateExpense':

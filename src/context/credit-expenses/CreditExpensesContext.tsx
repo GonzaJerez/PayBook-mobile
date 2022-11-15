@@ -1,5 +1,5 @@
 import {createContext, useContext, useEffect, useReducer} from 'react';
-import {getCreditPaymentsApi, removeCreditPaymentsApi, updateCreditPaymentsApi} from '../../api/credit-payments-api';
+import {getAllCreditPaymentsApi, getCreditPaymentByIdApi, removeCreditPaymentsApi, updateCreditPaymentsApi} from '../../api/credit-payments-api';
 import {CreditPayment, CreditPaymentResponse, GetCreditPayments} from '../../interfaces/CreditExpenses';
 import {UpdateExpense} from '../../interfaces/Expense';
 import {AccountsContext} from '../accounts/AccountsContext';
@@ -10,6 +10,7 @@ import {CreditExpensesReducer, CreditExpenseState} from './CreditExpensesReducer
 
 
 interface CreditExpensesProps extends CreditExpenseState {
+  getCreditPaymentById: (id: string) => Promise<void>;
   getCreditPayments: ({ pending }: {pending?: boolean | undefined;}) => Promise<void>;
   setActualCreditExpense: (creditExpense: CreditPayment) => void;
   updateCreditExpense: (body: UpdateExpense) => Promise<string | undefined>;
@@ -40,13 +41,31 @@ export const CreditExpensesProvider = ({children}:{children:JSX.Element | JSX.El
     if(!token || !actualAccount) return;
     
     try {
-      const resp:GetCreditPayments = await getCreditPaymentsApi({
+      const resp:GetCreditPayments = await getAllCreditPaymentsApi({
         idAccount: actualAccount.id,
         token,
         pending
       })
       if(!resp.error){
         dispatch({type: 'setCreditExpenses', payload:{creditExpenses: resp.credit_payments}})
+      }
+      
+    } catch (error) {
+      handleConnectionFail();
+    }
+  }
+
+  const getCreditPaymentById = async(id:string)=>{
+    if(!token || !actualAccount) return;
+    
+    try {
+      const resp:CreditPaymentResponse = await getCreditPaymentByIdApi({
+        idAccount: actualAccount.id,
+        token,
+        id
+      })
+      if(!resp.error){
+        setActualCreditExpense(resp.credit_payment)
       }
       
     } catch (error) {
@@ -127,6 +146,7 @@ export const CreditExpensesProvider = ({children}:{children:JSX.Element | JSX.El
     <CreditExpensesContext.Provider
       value={{
         ...state,
+        getCreditPaymentById,
         getCreditPayments,
         setActualCreditExpense,
         updateCreditExpense,

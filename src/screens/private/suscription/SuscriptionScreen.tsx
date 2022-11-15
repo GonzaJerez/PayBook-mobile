@@ -101,6 +101,7 @@ export const SuscriptionScreen = ({navigation}: Props) => {
         />
       }
     >
+      <Text style={[styles.infoText, {color:theme.ligthText}]}>Actualmente solo puedes tener una sola cuenta de gastos. Para poder crear o unirte a más cuentas debes ser un usuario Premium.</Text>
       <PremiumSuscriptionCard
         currentProduct={(currentOffering) && currentOffering[0].product}
         isSubscriptionActiveForOtherUser={isSubscriptionActiveForOtherUser}
@@ -143,6 +144,10 @@ export const SuscriptionScreen = ({navigation}: Props) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  infoText:{
+    paddingHorizontal:20,
+    marginTop:20
   },
   disclaimerText: {
     fontSize: 12

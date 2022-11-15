@@ -25,11 +25,13 @@ export const BarChart = ({color, value, percent, heightChart}: Props) => {
 
   return (
     <Animated.View style={[styles.barContainer, {height, backgroundColor: color}]}>
-      <Text 
-        style={[styles.barValue, {color}]}
-      >
-        {currencyShortFormat(value)}
-      </Text>
+      {(value > 0) && (
+        <Text 
+          style={[styles.barValue, {color}]}
+        >
+          {currencyShortFormat(value)}
+        </Text>
+      )}
       <View
         style={styles.bar}
       />
@@ -51,13 +53,8 @@ const styles = StyleSheet.create({
   barValue:{
     textAlign:'center',
     top:-20,
-    fontSize:11
+    fontSize:11,
+    // borderWidth:1
+    minHeight:16
   },
-  barText: {
-    alignSelf:'center',
-    textAlignVertical:'center',
-    height:30,
-    borderWidth:1,
-    textAlign: 'center',
-  }
 })

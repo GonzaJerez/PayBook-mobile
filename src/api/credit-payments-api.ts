@@ -9,6 +9,9 @@ export interface CreditPaymentsApi {
 export interface GetCreditPaymentsApi extends CreditPaymentsApi {
   pending?: boolean;
 }
+export interface GetCreditPaymentByIdApi extends CreditPaymentsApi {
+  id: string;
+}
 
 export interface UpdateCreditPaymentApi extends RemoveCreditPaymentApi {
   body:            UpdateCreditPayment;
@@ -19,7 +22,17 @@ export interface RemoveCreditPaymentApi extends CreditPaymentsApi {
 }
 
 
-export const getCreditPaymentsApi = async({idAccount,token,pending}:GetCreditPaymentsApi)=>{
+export const getCreditPaymentByIdApi = async({idAccount,token,id}:GetCreditPaymentByIdApi)=>{
+  const resp = await baseApi({
+    endpoint: `/accounts/${idAccount}/credit-payments/${id}`,
+    method: 'GET',
+    token
+  })
+
+  return resp;
+}
+
+export const getAllCreditPaymentsApi = async({idAccount,token,pending}:GetCreditPaymentsApi)=>{
   const resp = await baseApi({
     endpoint: `/accounts/${idAccount}/credit-payments${(pending) ? '?pending=true' : ''}`,
     method: 'GET',
