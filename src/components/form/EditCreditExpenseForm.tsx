@@ -11,7 +11,7 @@ import {UpdateCreditPayment} from '../../interfaces/CreditExpenses'
 import {useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 import {AccountStackNavigation} from '../../navigation/AccountNavigation'
-import {ErrorField} from '../texts/ErrorField'
+import {ErrorRequest} from '../texts/ErrorRequest'
 
 export const EditCreditExpenseForm = () => {
 
@@ -65,7 +65,7 @@ export const EditCreditExpenseForm = () => {
               type='number-pad'
             />
 
-            {(error) && (<ErrorField>{error}</ErrorField>)}
+            {(error) && (<ErrorRequest>{error}</ErrorRequest>)}
             
             <SubmitOrCancelButtons 
               onCancel={goBack}

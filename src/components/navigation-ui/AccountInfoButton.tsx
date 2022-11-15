@@ -1,15 +1,13 @@
-import React, {useContext} from 'react'
+import React from 'react'
 import {TouchableOpacity, StyleSheet } from 'react-native'
 import {Ionicons} from '@expo/vector-icons'
 import {useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 
-import {ThemeContext} from '../../context/theme/ThemeContext'
 import {PrivateStackNavigation} from '../../navigation/PrivateNavigation'
 
 export const AccountInfoButton = () => {
 
-  const {theme:{colors}} = useContext(ThemeContext)
   const {navigate} = useNavigation<NativeStackNavigationProp<PrivateStackNavigation>>()
 
   return (

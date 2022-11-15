@@ -11,6 +11,7 @@ import {HomeScreen} from '../screens/private/main-tab/HomeScreen';
 import {StatsScreen} from '../screens/private/main-tab/StatsScreen';
 import {CreateExpenseTopTab} from './CreateExpenseTopTab';
 import {StatisticsProvider} from '../context/statistics/StatisticsContext';
+import {AllExpensesScreen} from '../screens/expenses/AllExpensesScreen';
 
 
 

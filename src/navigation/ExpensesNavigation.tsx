@@ -5,12 +5,13 @@ import {ThemeContext} from '../context/theme/ThemeContext';
 import {AllExpensesScreen} from '../screens/expenses/AllExpensesScreen';
 import {DetailsExpenseScreen} from '../screens/expenses/DetailsExpenseScreen';
 import {EditExpenseScreen} from '../screens/expenses/EditExpenseScreen';
+import {Expense} from '../interfaces/Expense';
 
 
 
 export type ExpenseStackNavigation = {
   DetailsExpenseScreen: undefined;
-  AllExpensesScreen: undefined;
+  // AllExpensesScreen: {stats?: Expense[]};
   EditExpenseScreen: undefined;
 }
 
@@ -41,13 +42,13 @@ export function ExpensesNavigation() {
         }}
       />
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name="AllExpensesScreen"
         component={AllExpensesScreen}
         options={{
           title: 'Todos los gastos'
         }}
-      />
+      /> */}
 
       <Stack.Screen
         name="EditExpenseScreen"

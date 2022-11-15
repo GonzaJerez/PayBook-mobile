@@ -9,7 +9,7 @@ import {AccountStackNavigation} from '../../navigation/AccountNavigation';
 import {Field} from './Field';
 import {SubmitOrCancelButtons} from '../buttons/SubmitOrCancelButtons';
 import {ThemeContext} from '../../context/theme/ThemeContext';
-import {ErrorField} from '../texts/ErrorField';
+import {ErrorRequest} from '../texts/ErrorRequest';
 
 
 interface Props {
@@ -59,7 +59,7 @@ export const EditNameField = ({label,initialValue,isLoading,onSubmit}: Props) =>
             name='name'
           />
 
-          {(error) && <ErrorField>{error}</ErrorField>}
+          {(error) && <ErrorRequest>{error}</ErrorRequest>}
 
           <SubmitOrCancelButtons
             onSubmit={handleSubmit}

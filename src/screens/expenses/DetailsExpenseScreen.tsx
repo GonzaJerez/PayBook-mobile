@@ -7,8 +7,8 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack'
 import {ExpenseStackNavigation} from '../../navigation/ExpensesNavigation'
 import {useAlertToConfirm} from '../../hooks/useAlertToConfirm'
 import {ExpensesContext} from '../../context/expenses/ExpensesContext'
-import {ErrorField} from '../../components/texts/ErrorField'
 import {ThemeContext} from '../../context/theme/ThemeContext'
+import {ErrorRequest} from '../../components/texts/ErrorRequest'
 
 
 interface Props extends NativeStackScreenProps<ExpenseStackNavigation,'DetailsExpenseScreen'>{}
@@ -66,7 +66,7 @@ export const DetailsExpenseScreen = ({navigation}:Props) => {
       showsVerticalScrollIndicator={false}
     >
       {(isLoading) && (<ActivityIndicator color={theme.colors.primary} style={styles.spinner}/>)}
-      {(error) && (<ErrorField>{error}</ErrorField>)}
+      {(error) && (<ErrorRequest>{error}</ErrorRequest>)}
       <ListDetailsExpense />
       
     </ScrollView>

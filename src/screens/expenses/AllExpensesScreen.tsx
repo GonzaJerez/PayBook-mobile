@@ -1,42 +1,48 @@
-import React, {useContext, useEffect, useState} from 'react'
-import {View, StyleSheet, ScrollView} from 'react-native'
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, FlatList } from 'react-native';
+import { ExpenseItem } from '../../components/item-lists/ExpenseItem';
 
-import {ExpensesList} from '../../components/lists/ExpensesList'
-import {AccountsContext} from '../../context/accounts/AccountsContext'
-import {ExpensesContext} from '../../context/expenses/ExpensesContext'
-import {Expense} from '../../interfaces/Expense'
+import { DefaultSeparator } from '../../components/separators/DefaultSeparator';
+import { AccountsContext } from '../../context/accounts/AccountsContext';
+import { ExpensesContext } from '../../context/expenses/ExpensesContext';
+import { Expense } from '../../interfaces/Expense';
+import {PrivateStackNavigation} from '../../navigation/PrivateNavigation';
 
-export const AllExpensesScreen = () => {
+const LIMIT = 20;
 
-  const {actualAccount} = useContext(AccountsContext)
-  const {getAllExpenses} = useContext(ExpensesContext)
+interface Props extends NativeStackScreenProps<PrivateStackNavigation,'AllExpensesScreen'>{}
 
-  const [allExpenses, setAllExpenses] = useState<Expense[]>([])
+export const AllExpensesScreen = ({route}:Props) => {
 
-  useEffect(()=>{
-    getAllExpenses({limit:20})
-      .then(res => {
-        setAllExpenses(res?.expenses || [])
-      })
-  },[actualAccount])
+  const {stats} = route.params;
 
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.listContainer}>
-        <ExpensesList 
-          data={allExpenses}
-        />
+	const { actualAccount } = useContext(AccountsContext);
+	const { getAllExpenses } = useContext(ExpensesContext);
+	const [skip, setSkip] = useState(0);
 
-      </View>
-    </ScrollView>
-  )
-}
+	const [allExpenses, setAllExpenses] = useState<Expense[]>([]);
+
+	const getExpenses = async () => {
+		const res = await getAllExpenses({ limit: LIMIT, skip });
+		setAllExpenses([...allExpenses, ...res?.expenses || []]);
+		setSkip(skip + LIMIT);
+	};
+
+	useEffect(() => {
+		getExpenses();
+	}, [actualAccount]);
+
+	return (
+		<FlatList
+			data={(stats) ? stats : allExpenses}
+			renderItem={({ item }) => <ExpenseItem key={item.id} expense={item} />}
+			onEndReached={(stats) ? ()=>{} : getExpenses}
+      ListFooterComponent={(<DefaultSeparator />)}
+		/>
+	);
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  listContainer:{
-    marginVertical: 20
-  }
-})
+
+});

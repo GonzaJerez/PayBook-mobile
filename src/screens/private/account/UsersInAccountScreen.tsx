@@ -11,7 +11,7 @@ import {SimplePicker} from '../../../components/fields/SimplePicker'
 import {AccountsContext} from '../../../context/accounts/AccountsContext'
 import {AuthContext} from '../../../context/auth/AuthContext'
 import {getRange} from '../../../helpers/getRange'
-import {ErrorField} from '../../../components/texts/ErrorField'
+import {ErrorRequest} from '../../../components/texts/ErrorRequest'
 
 
 interface Props extends NativeStackScreenProps<AccountStackNavigation, 'UsersInAccountScreen'> {}
@@ -60,7 +60,7 @@ export const UsersInAccountScreen = ({navigation}: Props) => {
           setUsersSelectedToDelete={setUsersSelectedToDelete}
         />
 
-        {(error) && (<ErrorField>{error}</ErrorField>)}
+        {(error) && (<ErrorRequest>{error}</ErrorRequest>)}
 
         {(user?.roles.includes(ValidRoles.ADMIN) || actualAccount?.admin_user.id === user?.id)
         && (

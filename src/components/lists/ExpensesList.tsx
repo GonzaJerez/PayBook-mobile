@@ -6,7 +6,7 @@ import {Expense} from '../../interfaces/Expense'
 import {EmptyData} from '../texts/EmptyData'
 
 interface Props {
-  data: Expense[]
+  data: Expense[];
 }
 
 export const ExpensesList = ({data}:Props) => {

@@ -14,7 +14,7 @@ import {AccountsContext} from '../../context/accounts/AccountsContext'
 import {CreateAccount} from '../../interfaces/Account'
 import {MAX_USERS_IN_ACCOUNTS} from '../../constants/ContantsAccounts'
 import {NewAccountTopTabNavigation} from '../../navigation/NewAccountTopTab'
-import {ErrorField} from '../texts/ErrorField'
+import {ErrorRequest} from '../texts/ErrorRequest'
 
 
 const maxUsersAllowed = getRange(MAX_USERS_IN_ACCOUNTS)
@@ -77,7 +77,7 @@ export const CreateAccountForm = () => {
             placeholder='Descripción de la cuenta'
           />
 
-          {(error) && (<ErrorField>{error}</ErrorField>)}
+          {(error) && (<ErrorRequest>{error}</ErrorRequest>)}
 
           <SubmitOrCancelButtons 
             onCancel={()=>goBack()}

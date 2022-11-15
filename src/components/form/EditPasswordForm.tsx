@@ -9,7 +9,7 @@ import {UserStackNavigation} from '../../navigation/UserNavigation'
 import {SubmitOrCancelButtons} from '../buttons/SubmitOrCancelButtons'
 import {AuthContext} from '../../context/auth/AuthContext'
 import {PasswordField} from './PasswordField'
-import {ErrorField} from '../texts/ErrorField'
+import {ErrorRequest} from '../texts/ErrorRequest'
 
 
 export const EditPasswordForm = () => {
@@ -71,7 +71,7 @@ export const EditPasswordForm = () => {
             placeholder='········'
             name='newPassword2'
           />
-          {(error) && (<ErrorField>{error}</ErrorField>)}
+          {(error) && (<ErrorRequest>{error}</ErrorRequest>)}
           <SubmitOrCancelButtons
             onSubmit={handleSubmit}
             onCancel={goBack}

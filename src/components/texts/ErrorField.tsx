@@ -21,6 +21,5 @@ const styles = StyleSheet.create({
   textError: {
     fontSize:12,
     marginTop:5,
-    alignSelf: 'center'
   }
 })

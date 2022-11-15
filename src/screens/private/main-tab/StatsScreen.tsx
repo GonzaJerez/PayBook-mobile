@@ -10,6 +10,7 @@ import { StatisticsContext } from '../../../context/statistics/StatisticsContext
 import { ThemeContext } from '../../../context/theme/ThemeContext';
 import { LoadingModal } from '../../../components/modals/LoadingModal';
 
+
 export const StatsScreen = () => {
 	const { theme } = useContext(ThemeContext);
 	const { getStatistics } = useContext(ExpensesContext);
@@ -54,7 +55,11 @@ export const StatsScreen = () => {
 		>
 			{isLoading && <LoadingModal />}
 
-			<ShowExpensesCard data={statistics?.expenses || []}>
+			<ShowExpensesCard 
+				data={statistics?.expenses || []}
+				showAllExpensesButton
+				stats
+			>
 				<View style={styles.filtersContainer}>
 					<Filters />
 				</View>

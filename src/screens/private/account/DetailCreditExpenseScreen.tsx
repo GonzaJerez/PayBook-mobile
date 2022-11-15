@@ -10,7 +10,7 @@ import {currencyFormat} from '../../../helpers/currencyFormat'
 import {AccountStackNavigation} from '../../../navigation/AccountNavigation'
 import {useAlertToConfirm} from '../../../hooks/useAlertToConfirm'
 import {ThemeContext} from '../../../context/theme/ThemeContext'
-import {ErrorField} from '../../../components/texts/ErrorField'
+import {ErrorRequest} from '../../../components/texts/ErrorRequest'
 
 
 interface Props extends NativeStackScreenProps<AccountStackNavigation, 'DetailCreditExpenseScreen'> {}
@@ -72,7 +72,7 @@ export const DetailCreditExpenseScreen = ({navigation}: Props) => {
     >
       <View style={styles.dataContainer}>
         {(isLoading) && (<ActivityIndicator color={theme.colors.primary} style={styles.spinner}/>)}
-        {(error) && (<ErrorField>{error}</ErrorField>)}
+        {(error) && (<ErrorRequest>{error}</ErrorRequest>)}
         <RowInfo
           label='Coutas totales'
           value={String(actualCreditExpense?.installments)}

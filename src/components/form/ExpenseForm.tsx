@@ -14,8 +14,8 @@ import { TabBarNavigation } from '../../navigation/TabNavigation';
 import { CategoriesContext } from '../../context/categories/CategoriesContext';
 import { CategoryPicker } from '../fields/CategoryPicker';
 import { CreateExpense } from '../../interfaces/Expense';
-import { ErrorField } from '../texts/ErrorField';
 import { ExpensesContext } from '../../context/expenses/ExpensesContext';
+import {ErrorRequest} from '../texts/ErrorRequest';
 
 interface Props {
 	initialValues: {
@@ -131,7 +131,7 @@ export const ExpenseForm = ({ initialValues, onSubmit }: Props) => {
 					)}
 					<TextboxField name="description" />
 
-					{error && <ErrorField>{error}</ErrorField>}
+					{error && <ErrorRequest>{error}</ErrorRequest>}
 
 					<SubmitOrCancelButtons
 						onSubmit={handleSubmit}

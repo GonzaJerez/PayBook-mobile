@@ -1,5 +1,5 @@
 import React, {useContext} from 'react'
-import {View, StyleSheet, ViewStyle, ScrollView, Text, Dimensions} from 'react-native'
+import {View, StyleSheet, ScrollView, Dimensions} from 'react-native'
 
 import {Title} from '../texts/Title'
 import {DefaultSeparator} from '../separators/DefaultSeparator'
@@ -18,11 +18,12 @@ interface Props {
   children?: JSX.Element | JSX.Element[];
   showAllExpensesButton?: boolean;
   title?: string;
+  stats?: boolean;
 }
 
 const HEIGHT_SCREEN = Dimensions.get('window').height;
 
-export const ShowExpensesCard = ({data, children, title, showAllExpensesButton}: Props) => {
+export const ShowExpensesCard = ({data, children, title, stats, showAllExpensesButton}: Props) => {
 
   const {theme} = useContext(ThemeContext)
   const {navigate} = useNavigation<NativeStackNavigationProp<PrivateStackNavigation>>()
@@ -50,12 +51,12 @@ export const ShowExpensesCard = ({data, children, title, showAllExpensesButton}:
             </>
           )}
 
-          <ExpensesList data={data} />
+          <ExpensesList data={data.slice(0, LIMIT_EXPENSES_HOME)} />
 
           {(showAllExpensesButton && data.length >= LIMIT_EXPENSES_HOME) && (
             <TertiaryButton
               label='Ver todos los gastos'
-              onPress={() => navigate('ExpensesNavigation', {screen: 'AllExpensesScreen'})}
+              onPress={() => navigate('AllExpensesScreen', {stats:(stats) ? data : undefined})}
               style={styles.seeAllExpensesButton}
               fontSize={18}
             />

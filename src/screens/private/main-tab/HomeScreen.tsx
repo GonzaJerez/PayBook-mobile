@@ -8,6 +8,7 @@ import {AccountsContext} from '../../../context/accounts/AccountsContext';
 import {ExpensesContext} from '../../../context/expenses/ExpensesContext';
 import {ThemeContext} from '../../../context/theme/ThemeContext';
 
+
 export const HomeScreen = () => {
 
   const {theme} = useContext(ThemeContext)
@@ -15,7 +16,7 @@ export const HomeScreen = () => {
   const {lastExpenses, getLastExpenses} = useContext(ExpensesContext)
 
   useEffect(() => {
-    getLastExpenses({})
+    getLastExpenses({limit: 5})
   }, [actualAccount])
 
   return (

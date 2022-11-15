@@ -16,7 +16,7 @@ import {TabBarNavigation} from '../../navigation/TabNavigation'
 import {InlineFixedValue} from '../fields/InlineFixedValue'
 import {CreditExpensesContext} from '../../context/credit-expenses/CreditExpensesContext'
 import {EmptyData} from '../texts/EmptyData'
-import {ErrorField} from '../texts/ErrorField'
+import {ErrorRequest} from '../texts/ErrorRequest'
 
 
 export const PayInstallmentForm = () => {
@@ -114,7 +114,7 @@ export const PayInstallmentForm = () => {
           <TextboxField
             name='description'
           />
-          {(error) && (<ErrorField>{error}</ErrorField>)}
+          {(error) && (<ErrorRequest>{error}</ErrorRequest>)}
           <SubmitOrCancelButtons
             onSubmit={handleSubmit}
             onCancel={() => cleanForm(resetForm)}

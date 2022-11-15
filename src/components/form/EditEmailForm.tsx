@@ -10,7 +10,7 @@ import {SubmitOrCancelButtons} from '../buttons/SubmitOrCancelButtons'
 import {UserStackNavigation} from '../../navigation/UserNavigation'
 import {FixedValue} from './FixedValueField'
 import {AuthContext} from '../../context/auth/AuthContext'
-import {ErrorField} from '../texts/ErrorField'
+import {ErrorRequest} from '../texts/ErrorRequest'
 
 export const EditEmailForm = () => {
 
@@ -65,7 +65,7 @@ export const EditEmailForm = () => {
             type='email-address'
             name='email2'
           />
-          {(error) && (<ErrorField>{error}</ErrorField>)}
+          {(error) && (<ErrorRequest>{error}</ErrorRequest>)}
           <SubmitOrCancelButtons
             onSubmit={handleSubmit}
             onCancel={goBack}
