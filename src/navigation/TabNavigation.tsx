@@ -12,6 +12,7 @@ import {StatsScreen} from '../screens/private/main-tab/StatsScreen';
 import {CreateExpenseTopTab} from './CreateExpenseTopTab';
 import {StatisticsProvider} from '../context/statistics/StatisticsContext';
 import {AllExpensesScreen} from '../screens/expenses/AllExpensesScreen';
+import {AccountsContext} from '../context/accounts/AccountsContext';
 
 
 
@@ -27,11 +28,13 @@ const Tab = createBottomTabNavigator<TabBarNavigation>();
 export const TabNavigation = () => {
 
   const {theme} = useContext(ThemeContext)
+  const {actualAccount} = useContext(AccountsContext)
 
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: theme.colors.primary,
+        tabBarStyle: {display: (actualAccount) ? 'flex' : 'none'},
         headerStyle: {
           backgroundColor: theme.colors.primary,
         },

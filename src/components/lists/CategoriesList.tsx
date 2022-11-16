@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react'
-import {View, StyleSheet} from 'react-native'
+import {View, StyleSheet, FlatList} from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import {NativeStackNavigationProp} from '@react-navigation/native-stack'
 
@@ -20,19 +20,26 @@ export const CategoriesList = () => {
   },[])
 
   return (
-    <View style={styles.container}>
-      <TertiaryButton
+    <FlatList 
+      data={allCategories}
+      renderItem={({item})=>(
+        <CategoryItem
+          key={item.id}
+          category={item}
+        />
+      )}
+      style={styles.container}
+      ListHeaderComponent={()=>(
+        <TertiaryButton
         label={'Nueva categoría +'}
         onPress={() => navigate('NewCategoryScreen',{type:'categoría'})}
         style={styles.addButton}
       />
-      {allCategories.map(cat => (
-        <CategoryItem
-          key={cat.id}
-          category={cat}
-        />
-      ))}
-    </View>
+      )}
+      ListFooterComponent={()=>(
+        <View style={styles.footer}/>
+      )}
+    />
   )
 }
 
@@ -42,5 +49,8 @@ const styles = StyleSheet.create({
   },
   addButton: {
     alignSelf: 'center'
+  },
+  footer:{
+    height:50
   }
 })

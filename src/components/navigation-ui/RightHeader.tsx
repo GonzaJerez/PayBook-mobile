@@ -1,12 +1,18 @@
 import {View, Text, StyleSheet} from 'react-native'
-import React from 'react'
+import React, {useContext} from 'react'
 import {UserButton} from './UserButton'
 import {AccountInfoButton} from './AccountInfoButton'
+import {AccountsContext} from '../../context/accounts/AccountsContext'
 
 export const RightHeader = () => {
+
+  const {actualAccount} = useContext(AccountsContext)
+
   return (
     <View style={styles.container}>
-      <AccountInfoButton />
+      {(actualAccount) && (
+        <AccountInfoButton />
+      )}
       <UserButton />
     </View>
   )

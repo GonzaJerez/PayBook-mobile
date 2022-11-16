@@ -5,14 +5,15 @@ import {PrimaryButton} from './PrimaryButton'
 import {TertiaryButton} from './TertiaryButton'
 
 interface Props {
-  onSubmit: ()=>void;
-  onCancel: ()=>void;
   marginTop?: number
   disable?: boolean;
   isLoading?: boolean;
+  submitLabel?: string;
+  onSubmit: ()=>void;
+  onCancel: ()=>void;
 }
 
-export const SubmitOrCancelButtons = ({onSubmit, onCancel, marginTop=50, disable, isLoading}:Props) => {
+export const SubmitOrCancelButtons = ({onSubmit, onCancel, marginTop=50, disable, isLoading, submitLabel}:Props) => {
   
   return (
     <>
@@ -22,7 +23,7 @@ export const SubmitOrCancelButtons = ({onSubmit, onCancel, marginTop=50, disable
           onPress={onCancel}
         />
         <PrimaryButton 
-          label='Guardar' 
+          label={submitLabel || 'Guardar'} 
           onPress={onSubmit}
           style={styles.saveButton}
           disable={disable}

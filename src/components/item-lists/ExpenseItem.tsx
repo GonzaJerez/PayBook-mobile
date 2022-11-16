@@ -8,6 +8,7 @@ import {PrivateStackNavigation} from '../../navigation/PrivateNavigation'
 import {Expense} from '../../interfaces/Expense'
 import {currencyFormat} from '../../helpers/currencyFormat'
 import {ExpensesContext} from '../../context/expenses/ExpensesContext'
+import {AuthContext} from '../../context/auth/AuthContext'
 
 
 interface Props {
@@ -18,6 +19,7 @@ export const ExpenseItem = ({expense}: Props) => {
 
   const {navigate} = useNavigation<NativeStackNavigationProp<PrivateStackNavigation, 'TabNavigation'>>()
   const {theme} = useContext(ThemeContext)
+  const {user} = useContext(AuthContext)
   const {setActualExpense} = useContext(ExpensesContext)
 
   const onSelectExpense = ()=>{
@@ -32,7 +34,12 @@ export const ExpenseItem = ({expense}: Props) => {
     >
 
       <View style={styles.reasonContainer}>
-        <Text style={[styles.categoryName, {color:theme.colors.text}]}>{expense.category.name} </Text>
+        <View style={styles.titleExpenseContainer}>
+          <Text style={[styles.categoryName, {color:theme.colors.text}]}>{expense.category.name}</Text>
+          {(user?.id !== expense.user.id) && (
+            <Text style={[styles.userName, {color:theme.ligthText}]}> - {expense.user.fullName}</Text>
+          )}
+        </View>
         <Text
           style={[
             styles.subcategoryName, {
@@ -65,6 +72,15 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   reasonContainer: {
+  },
+  titleExpenseContainer:{
+    flexDirection:'row',
+    alignItems:'center'
+  },
+  userName:{
+    top:2,
+    fontSize:10,
+    fontWeight:'200'
   },
   categoryName: {
     fontWeight: '600',

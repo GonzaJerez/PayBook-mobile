@@ -45,7 +45,7 @@ export const AccountPicker = () => {
         style={styles.accountActualButton}
         onPress={() => setIsPopupOpen(true)}
       >
-        <Text style={[styles.accountActualText]}>{actualAccount?.name}</Text>
+        <Text style={[styles.accountActualText]}>{actualAccount?.name || 'Sin cuenta'}</Text>
         <Ionicons
           name="chevron-down-outline"
           size={20}

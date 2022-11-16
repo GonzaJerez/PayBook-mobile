@@ -1,5 +1,5 @@
 import React, {useContext} from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, FlatList } from 'react-native'
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
@@ -14,21 +14,26 @@ export const SubcategoriesList = () => {
   const {actualCategory} = useContext(CategoriesContext)
 
   return (
-    <View style={styles.container}>
-      <TertiaryButton 
+    <FlatList 
+      data={actualCategory?.subcategories}
+      renderItem={({item})=>(
+        <SubcategoryItem
+            key={item.id}
+            subcategory={item}
+          />
+      )}
+      style={styles.container}
+      ListHeaderComponent={()=>(
+        <TertiaryButton
         label={'Nueva subcategoría +'}
-        onPress={()=>navigate('NewCategoryScreen',{type:'subcategoría'})}
+        onPress={() => navigate('NewCategoryScreen',{type:'categoría'})}
         style={styles.addButton}
       />
-      {
-        actualCategory?.subcategories?.map( subcat => (
-          <SubcategoryItem
-            key={subcat.id}
-            subcategory={subcat}
-          />
-        ))
-      }
-    </View>
+      )}
+      ListFooterComponent={()=>(
+        <View style={styles.footer}/>
+      )}
+    />
   )
 }
 
@@ -38,5 +43,8 @@ const styles = StyleSheet.create({
   },
   addButton: {
     alignSelf: 'center'
+  },
+  footer:{
+    height:50
   }
 })

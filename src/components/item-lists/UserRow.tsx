@@ -51,12 +51,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingBottom: 10,
+    paddingVertical: 8,
     borderBottomWidth: 1
   },
   userDataContainer: {
     flex: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   userName: {
     fontSize: 20,

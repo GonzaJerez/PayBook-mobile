@@ -28,6 +28,8 @@ export const BarChart = ({color, value, percent, heightChart}: Props) => {
       {(value > 0) && (
         <Text 
           style={[styles.barValue, {color}]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
         >
           {currencyShortFormat(value)}
         </Text>
@@ -51,10 +53,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   barValue:{
+    position:'absolute',
     textAlign:'center',
+    alignSelf:'center',
     top:-20,
-    fontSize:11,
-    // borderWidth:1
-    minHeight:16
+    fontSize:12,
+    // borderWidth:1,
+    minHeight:16,
+    textAlignVertical:'center'
   },
 })

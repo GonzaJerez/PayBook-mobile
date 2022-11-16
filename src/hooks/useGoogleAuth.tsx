@@ -1,4 +1,4 @@
-import {useContext, useEffect} from 'react';
+import {useContext, useEffect, useState} from 'react';
 // Google
 import * as WebBrowser from 'expo-web-browser';
 import * as GoogleSignIn from 'expo-auth-session/providers/google';
@@ -16,6 +16,7 @@ WebBrowser.maybeCompleteAuthSession();
 export const useGoogleAuth = () =>{
 
   const {googleSignIn} = useContext(AuthContext)
+  const [error, setError] = useState<string>()
 
   const [_request, response, promptAsync] = GoogleSignIn.useAuthRequest({
     expoClientId: GOOGLE_EXPO_CLIENT,
@@ -27,11 +28,17 @@ export const useGoogleAuth = () =>{
   useEffect(()=>{
     if (response?.type === 'success') {
       const {access_token} = response.params
-      googleSignIn(access_token);
+      googleSignIn(access_token)
+        .then(errorMessage => {
+          if(errorMessage){
+            setError(errorMessage)
+          }
+        })
     }
   },[response])
 
   return {
+    error,
     activateGoogleAuth: promptAsync,
   }
 }

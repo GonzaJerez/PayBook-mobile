@@ -3,14 +3,16 @@ import React from 'react'
 
 interface Props {
   children: JSX.Element | JSX.Element[];
-  onPress: ()=>void
+  onPress: ()=>void;
+  disabled?: boolean;
 }
 
-export const PopupOption = ({children, onPress}:Props) => {
+export const PopupOption = ({children, disabled, onPress}:Props) => {
   return (
     <TouchableOpacity 
       style={styles.optionsPopupRow}
       onPress={onPress}
+      disabled={disabled}
     >
       {children}
     </TouchableOpacity>

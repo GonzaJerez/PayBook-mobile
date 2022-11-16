@@ -57,13 +57,18 @@ export const AccountsProvider = ({
 
 	const setAccounts = async () => {
 		if (!token) return;
+		startLoading()
 		try {
 			const resp: GetAccountsProps = await getAccountsApi(token);
 			if (!resp.message) {
 				dispatch({ type: 'setAccounts', payload: { accounts: resp.accounts } });
 			}
-		} catch (error) {
+		} 
+		catch (error) {
 			handleConnectionFail();
+		}
+		finally{
+			finishLoading()
 		}
 	};
 
@@ -102,7 +107,6 @@ export const AccountsProvider = ({
 				state.actualAccount.id,
 				token
 			);
-      console.log(resp);
       
 			if (resp.message) {
 				return resp.message;
@@ -152,12 +156,13 @@ export const AccountsProvider = ({
 	};
 
 	const joinToAccount = async (access_key: string) => {
-		if (!state.actualAccount || !token) return;
+		if (!token) return;
 
 		startLoading();
 
 		try {
 			const resp: AccountResponse = await joinToAccountApi(access_key, token);
+			
 			if (resp.message) {
 				return resp.message;
 			} else {

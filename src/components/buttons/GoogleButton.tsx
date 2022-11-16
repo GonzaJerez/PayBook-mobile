@@ -2,26 +2,30 @@ import React from 'react'
 import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native'
 
 import {useGoogleAuth} from '../../hooks/useGoogleAuth';
+import {ErrorRequest} from '../texts/ErrorRequest';
 
 
 
 export const GoogleButton = () => {
 
-  const {activateGoogleAuth} = useGoogleAuth()
+  const {error, activateGoogleAuth} = useGoogleAuth()
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        onPress={()=>activateGoogleAuth()}
-        style={{...styles.googleButton, backgroundColor: '#fafafa', shadowColor: '#aaa'}}
-      >
-        <Image
-          style={{...styles.googleIcon}}
-          source={require('../../../assets/imgs/logo-google.png')}
-        />
-        <Text style={styles.googleText}>Ingresar con Google</Text>
-      </TouchableOpacity>
-    </View>
+    <>
+      <View style={styles.container}>
+        <TouchableOpacity
+          onPress={()=>activateGoogleAuth()}
+          style={{...styles.googleButton, backgroundColor: '#fafafa', shadowColor: '#aaa'}}
+        >
+          <Image
+            style={{...styles.googleIcon}}
+            source={require('../../../assets/imgs/logo-google.png')}
+          />
+          <Text style={styles.googleText}>Ingresar con Google</Text>
+        </TouchableOpacity>
+      </View>
+      {(error) && (<ErrorRequest>{error}</ErrorRequest>)}
+    </>
   )
 }
 
