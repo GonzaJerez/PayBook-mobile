@@ -18,7 +18,7 @@ export const AccountPicker = () => {
   const {navigate} = useNavigation<NativeStackNavigationProp<PrivateStackNavigation>>()
 
   const {theme: {colors}} = useContext(ThemeContext)
-  const {actualAccount, allAccounts, changeActualAccount} = useContext(AccountsContext)
+  const {actualAccount, isLoading, allAccounts, changeActualAccount} = useContext(AccountsContext)
   const {user} = useContext(AuthContext)
 
   const [isPopupOpen, setIsPopupOpen] = useState(false)
@@ -45,7 +45,7 @@ export const AccountPicker = () => {
         style={styles.accountActualButton}
         onPress={() => setIsPopupOpen(true)}
       >
-        <Text style={[styles.accountActualText]}>{actualAccount?.name || 'Sin cuenta'}</Text>
+        <Text style={[styles.accountActualText]}>{actualAccount?.name || ((isLoading) ? 'Cargando cuentas...' : 'Sin cuenta')}</Text>
         <Ionicons
           name="chevron-down-outline"
           size={20}

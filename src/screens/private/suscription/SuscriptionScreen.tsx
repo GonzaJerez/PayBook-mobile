@@ -101,7 +101,9 @@ export const SuscriptionScreen = ({navigation}: Props) => {
         />
       }
     >
-      <Text style={[styles.infoText, {color:theme.ligthText}]}>Actualmente solo puedes tener una sola cuenta de gastos. Para poder crear o unirte a más cuentas debes ser un usuario Premium.</Text>
+      {(!user?.roles.includes(ValidRoles.USER_PREMIUM) && (
+        <Text style={[styles.infoText, {color:theme.ligthText}]}>Actualmente solo puedes tener una sola cuenta de gastos. Para poder crear o unirte a más cuentas debes ser un usuario Premium.</Text>
+      ))}
       <PremiumSuscriptionCard
         currentProduct={(currentOffering) && currentOffering[0].product}
         isSubscriptionActiveForOtherUser={isSubscriptionActiveForOtherUser}
@@ -134,6 +136,15 @@ export const SuscriptionScreen = ({navigation}: Props) => {
             >
               Cancelar la suscipción actual
             </A> y volver a suscribirse desde esta nueva cuenta (esto puede demorar algunos minutos).
+          </Text>
+        </View>
+      )}
+      {(user?.roles.includes(ValidRoles.USER_PREMIUM)) && (
+        <View style={styles.errorDetails}>
+          <Text
+            style={[styles.disclaimerText, {color: theme.ligthText}]}
+          >
+            * Tener en cuenta que al dar de baja el plan Premium se te eliminará de todas las cuentas que hayas creado o hayas ingresado quedando unicamente con la primera cuenta.
           </Text>
         </View>
       )}
