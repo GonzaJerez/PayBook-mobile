@@ -2,10 +2,6 @@ import React, { useContext } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { ThemeContext } from '../context/theme/ThemeContext';
-import {
-	SuscriptionNavigation,
-	SuscriptionStackNavigation,
-} from './SuscriptionNavigation';
 import { TabNavigation } from './TabNavigation';
 import { UserNavigation } from './UserNavigation';
 import { AccountNavigation, AccountStackNavigation } from './AccountNavigation';
@@ -19,15 +15,16 @@ import {
 } from './ExpensesNavigation';
 import { CreditExpensesProvider } from '../context/credit-expenses/CreditExpensesContext';
 import { AllExpensesScreen } from '../screens/expenses/AllExpensesScreen';
-import {Expense} from '../interfaces/Expense';
+import { Expense } from '../interfaces/Expense';
+import {SuscriptionScreen} from '../screens/private/suscription/SuscriptionScreen';
 
 export type PrivateStackNavigation = {
 	TabNavigation: undefined;
 	UserNavigation: undefined;
-	SuscriptionNavigation: { screen: keyof SuscriptionStackNavigation };
 	AccountNavigation: { screen: keyof AccountStackNavigation };
-	ExpensesNavigation: {screen: keyof ExpenseStackNavigation}
-	AllExpensesScreen: {stats?: Expense[]};
+	ExpensesNavigation: { screen: keyof ExpenseStackNavigation };
+	SuscriptionScreen: {tryToCreateNewAccount?: boolean};
+	AllExpensesScreen: { stats?: Expense[] };
 };
 
 const Stack = createNativeStackNavigator<PrivateStackNavigation>();
@@ -60,12 +57,6 @@ export function PrivateNavigation() {
 				/>
 
 				<Stack.Screen
-					name="SuscriptionNavigation"
-					component={SuscriptionNavigation}
-					options={{ headerShown: false }}
-				/>
-
-				<Stack.Screen
 					name="AccountNavigation"
 					component={AccountNavigation}
 					options={{ headerShown: false }}
@@ -75,6 +66,12 @@ export function PrivateNavigation() {
 					name="ExpensesNavigation"
 					component={ExpensesNavigation}
 					options={{ headerShown: false }}
+				/>
+
+				<Stack.Screen
+					name="SuscriptionScreen"
+					component={SuscriptionScreen}
+					options={{ title: 'Suscripciones' }}
 				/>
 
 				<Stack.Screen

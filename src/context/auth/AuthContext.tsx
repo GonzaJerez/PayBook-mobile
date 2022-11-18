@@ -195,7 +195,7 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
 
     try {
       const resp: UserResponse = await premiumUserApi(state.user?.id, state.token, {revenue_id})
-      if(resp.message){
+      if(resp.error){
         return resp.message
       } else {
         dispatch({type: 'updateUser', payload: {user: resp.user}})

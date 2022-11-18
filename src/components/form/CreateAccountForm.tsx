@@ -80,6 +80,7 @@ export const CreateAccountForm = () => {
           {(error) && (<ErrorRequest>{error}</ErrorRequest>)}
 
           <SubmitOrCancelButtons 
+            submitLabel='Crear'
             onCancel={()=>goBack()}
             onSubmit={handleSubmit}
             isLoading={isLoading}

@@ -37,7 +37,7 @@ export const ExpenseItem = ({expense}: Props) => {
         <View style={styles.titleExpenseContainer}>
           <Text style={[styles.categoryName, {color:theme.colors.text}]}>{expense.category.name}</Text>
           {(user?.id !== expense.user.id) && (
-            <Text style={[styles.userName, {color:theme.ligthText}]}> - {expense.user.fullName}</Text>
+            <Text style={[styles.userName, {color:theme.disable}]}> - {expense.user.fullName}</Text>
           )}
         </View>
         <Text
@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
   userName:{
     top:2,
     fontSize:10,
-    fontWeight:'200'
   },
   categoryName: {
     fontWeight: '600',

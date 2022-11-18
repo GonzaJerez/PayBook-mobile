@@ -137,10 +137,10 @@ export const AccountsProvider = ({
 				state.actualAccount.id,
 				token
 			);
-			if (respPushout.statusCode !== 200) {
+			if (respPushout.error) {
 				return respPushout.message;
-			} else if (respUpdate.statusCode !== 200) {
-				return respPushout.message;
+			} else if (respUpdate.error) {
+				return respUpdate.message;
 			} else {
 				dispatch({
 					type: 'updateAccount',

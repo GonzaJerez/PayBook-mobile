@@ -79,7 +79,7 @@ export const UserProfile = () => {
         <RowInfoPressable
           label='Premium'
           value={user?.roles.includes(ValidRoles.USER_PREMIUM) ? 'Sí' : 'No'}
-          onPress={() => navigate('SuscriptionNavigation', {screen: 'SuscriptionScreen'})}
+          onPress={() => navigate('SuscriptionScreen',{})}
           borderBottom
         />
 

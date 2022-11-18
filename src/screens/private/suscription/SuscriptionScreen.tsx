@@ -8,18 +8,18 @@ import {A} from '@expo/html-elements';
 import {InfoApp} from '../../../constants/InfoApp';
 import {AuthContext} from '../../../context/auth/AuthContext';
 import {ThemeContext} from '../../../context/theme/ThemeContext';
-import {SuscriptionStackNavigation} from '../../../navigation/SuscriptionNavigation';
 import {PremiumSuscriptionCard} from '../../../components/cards/PremiumSuscriptionCard';
 import {externalLinks} from '../../../constants/ExternalLinks';
 import {ValidRoles} from '../../../interfaces/ValidRoles';
+import {PrivateStackNavigation} from '../../../navigation/PrivateNavigation';
 
 const REVENUE_API_KEY = Constants?.manifest?.extra?.revenueApiKey
 
 
-interface Props extends NativeStackScreenProps<SuscriptionStackNavigation, 'SuscriptionScreen'> {}
+interface Props extends NativeStackScreenProps<PrivateStackNavigation, 'SuscriptionScreen'> {}
 
 
-export const SuscriptionScreen = ({navigation}: Props) => {
+export const SuscriptionScreen = ({navigation, route}: Props) => {
 
   const {theme} = useContext(ThemeContext)
   const {user, becomePremiumUser, checkPremium} = useContext(AuthContext)
@@ -27,6 +27,8 @@ export const SuscriptionScreen = ({navigation}: Props) => {
   const [currentOffering, setCurrentOffering] = useState<PurchasesPackage[] | null>(null);
   const [isSubscriptionActiveForOtherUser, setIsSubscriptionActiveForOtherUser] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
+
+  const {tryToCreateNewAccount = false} = route.params;
 
 
   const getInfoSubscription = async () => {
@@ -73,8 +75,14 @@ export const SuscriptionScreen = ({navigation}: Props) => {
 
       // Si la compra se realiza correctamente
       if (resp.customerInfo.entitlements.active[InfoApp.premium_entitlement_id]) {
-        await becomePremiumUser(resp.customerInfo.originalAppUserId)
-        navigation.popToTop()
+        const errorMessage = await becomePremiumUser(resp.customerInfo.originalAppUserId)
+        if(!errorMessage){
+          if(tryToCreateNewAccount){
+            navigation.replace('AccountNavigation',{screen:'NewAccountNavigation'})
+          } else {
+            navigation.goBack()
+          }
+        }
       }
     }
     catch (error: any) {
