@@ -9,26 +9,27 @@ import { useNavigation } from '@react-navigation/native';
 import { PrivateStackNavigation } from '../../navigation/PrivateNavigation';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RowInfoPressable } from '../item-lists/RowInfoPressable';
-import {CreditExpensesContext} from '../../context/credit-expenses/CreditExpensesContext';
+import { CreditExpensesContext } from '../../context/credit-expenses/CreditExpensesContext';
 
 export const ListDetailsExpense = () => {
 	const { actualExpense } = useContext(ExpensesContext);
-  const {getCreditPaymentById} = useContext(CreditExpensesContext)
+	// const { getCreditPaymentById } = useContext(CreditExpensesContext);
 	const yearWithTwoDigits = String(actualExpense?.year).slice(2);
 	const formatDate = `${actualExpense?.num_date}/${actualExpense?.month}/${yearWithTwoDigits}`;
 
-	const { navigate } = useNavigation<NativeStackNavigationProp<PrivateStackNavigation>>();
+	const { navigate } =
+		useNavigation<NativeStackNavigationProp<PrivateStackNavigation>>();
 
-  useEffect(()=>{
-    getCreditPaymentById(actualExpense?.credit_payment?.id || '')
-  },[actualExpense])
+	// useEffect(() => {
+	// 	getCreditPaymentById(actualExpense?.credit_payment?.id || '');
+	// }, [actualExpense]);
 
-  const onViewDetailsCreditPayment = ()=>{
-    if(!actualExpense?.credit_payment) return;
-    navigate('AccountNavigation', {
-      screen: 'DetailCreditExpenseScreen',
-    })
-  }
+	const onViewDetailsCreditPayment = () => {
+		if (!actualExpense?.credit_payment) return;
+		navigate('AccountNavigation', {
+			screen: 'DetailCreditExpenseScreen',
+		});
+	};
 
 	return (
 		<InfoListContainer>
@@ -48,11 +49,17 @@ export const ListDetailsExpense = () => {
 			<RowInfo label="Usuario" value={actualExpense?.user.fullName || ''} />
 			<>
 				{actualExpense?.credit_payment && (
-					<RowInfoPressable
-						onPress={onViewDetailsCreditPayment}
-						label="Couta pagada"
-						value="Sí"
-					/>
+					<>
+						<RowInfoPressable
+							onPress={onViewDetailsCreditPayment}
+							label="Couta pagada"
+							value="Sí"
+						/>
+						<RowInfo
+							label="Referencia"
+							value={actualExpense.credit_payment.name}
+						/>
+					</>
 				)}
 			</>
 

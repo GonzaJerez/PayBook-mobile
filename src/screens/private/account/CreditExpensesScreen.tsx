@@ -7,13 +7,14 @@ import {AccountStackNavigation} from '../../../navigation/AccountNavigation'
 import {CreditExpensesContext} from '../../../context/credit-expenses/CreditExpensesContext'
 import {CreditPayment} from '../../../interfaces/CreditExpenses'
 import {EmptyData} from '../../../components/texts/EmptyData'
+import {RowLoader} from '../../../components/loaders/RowLoader'
 
 
 interface Props extends NativeStackScreenProps<AccountStackNavigation,'CreditExpensesScreen'>{}
 
 export const CreditExpensesScreen = ({navigation}:Props) => {
 
-  const {allCreditExpenses, getCreditPayments, setActualCreditExpense} = useContext(CreditExpensesContext)
+  const {allCreditExpenses, isLoading, getCreditPayments, setActualCreditExpense} = useContext(CreditExpensesContext)
 
   useEffect(()=>{
     getCreditPayments({pending:false})
@@ -24,9 +25,15 @@ export const CreditExpensesScreen = ({navigation}:Props) => {
     navigation.navigate('DetailCreditExpenseScreen')
   }
 
-  if(allCreditExpenses.length === 0){
+  if(allCreditExpenses.length === 0 && !isLoading){
     return (
       <EmptyData text='No existen gastos en cuotas en esta cuenta aún.'/>
+    )
+  }
+  
+  if(isLoading){
+    return (
+      <RowLoader width={80} marginVertical={30}/>
     )
   }
 

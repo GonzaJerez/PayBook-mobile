@@ -14,10 +14,11 @@ interface Props{
 export const CreditExpenseRow = ({item, onPress}:Props) => {
 
   const {theme} = useContext(ThemeContext)
+  const isPending = item.installments > item.installments_paid
 
   return (
     <TouchableOpacity 
-      style={[styles.creditPaymentContainer, {borderColor: theme.colors.border}]}
+      style={[styles.creditPaymentContainer, {borderColor: theme.colors.border, opacity: (isPending) ? 1 : 0.4}]}
       onPress={onPress}
     >
 

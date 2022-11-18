@@ -53,6 +53,7 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
 
   const getPrincipalAmounts = async () => {
     if (!token || !actualAccount) return;
+    startLoading()
 
     try {
       const resp: PrincipalAmountsResponse = await getPrincipalAmountsApi({
@@ -62,14 +63,18 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
       if(!resp.error){
         dispatch({type: 'setPrincipalAmounts', payload: {principalAmounts: resp}})
       }
-
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
 
   const getLastExpenses = async (querys?: PaginationQuerys) => {
+    startLoading()
     if (!token || !actualAccount) return;
 
     try {
@@ -82,13 +87,18 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
         dispatch({type: 'setLastExpenses', payload: {lastExpenses: resp.expenses}})
       }
 
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 
   const getAllExpenses = async (querys?: PaginationQuerys) => {
     if (!token || !actualAccount) return;
+    startLoading()
 
     try {
       const resp: GetExpenses = await getExpensesApi({
@@ -101,9 +111,12 @@ export const ExpensesProvider = ({children}: {children: JSX.Element | JSX.Elemen
           expenses: resp.expenses
         }
       }
-
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail()
+    }
+    finally {
+      finishLoading()
     }
   }
 

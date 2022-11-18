@@ -25,26 +25,17 @@ interface Props {
 		subcategoryId: string;
 		installments: number;
 		description: string;
+		name_credit_payment?: string;
 	};
 	onSubmit: (body: CreateExpense) => Promise<string | undefined>;
 }
 
-const dataToRadioButtons = [
-	{
-		label: 'Un solo pago',
-		value: false,
-	},
-	{
-		label: 'Cuotas',
-		value: true,
-	},
-];
 
 export const ExpenseForm = ({ initialValues, onSubmit }: Props) => {
 	const { goBack } =
-		useNavigation<NativeStackNavigationProp<TabBarNavigation>>();
+	useNavigation<NativeStackNavigationProp<TabBarNavigation>>();
 	const { allCategories, actualCategory, getCategories, setActualCategory } =
-		useContext(CategoriesContext);
+	useContext(CategoriesContext);
 	const { isLoading } = useContext(ExpensesContext);
 	const [error, setError] = useState<string>();
 
@@ -62,6 +53,18 @@ export const ExpenseForm = ({ initialValues, onSubmit }: Props) => {
 		resetForm();
 		goBack();
 	};
+
+	const dataToRadioButtons = [
+		{
+			label: 'Un solo pago',
+			// value: (initialValues.installments === 1),
+		},
+		{
+			label: 'Cuotas',
+			// value: (initialValues.installments > 1),
+		},
+	];
+	
 
 	const onSubmitForm = async (values: CreateExpense, resetForm: () => void) => {
 		const errorMessage = await onSubmit(values);
@@ -121,7 +124,11 @@ export const ExpenseForm = ({ initialValues, onSubmit }: Props) => {
 						name="subcategoryId"
 						options={actualCategory?.subcategories || []}
 					/>
-					<RadioButtonsField name="installments" data={dataToRadioButtons} />
+					<RadioButtonsField 
+						name="installments" 
+						data={dataToRadioButtons} 
+						initialValue={initialValues.installments > 1}
+					/>
 					{values.installments > 1 && (
 						<InlineField
 							label="Nombre de referencia"

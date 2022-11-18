@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useContext, useEffect, useReducer } from 'react';
 import {
 	createAccountApi,
@@ -52,7 +53,7 @@ export const AccountsProvider = ({
 	const [state, dispatch] = useReducer(AccountsReducer, initialValues);
 
 	useEffect(() => {
-		setAccounts();
+		setAccounts();		
 	}, []);
 
 	const setAccounts = async () => {
@@ -61,7 +62,12 @@ export const AccountsProvider = ({
 		try {
 			const resp: GetAccountsProps = await getAccountsApi(token);
 			if (!resp.message) {
-				dispatch({ type: 'setAccounts', payload: { accounts: resp.accounts } });
+				// Recuperar la ultima cuenta que estuvo usando el usuario para setearla como cuenta actual
+				const lastAccount = await AsyncStorage.getItem('lastAccount')
+				dispatch({ type: 'setAccounts', payload: { accounts: resp.accounts, lastAccount } });
+				if(!lastAccount){
+					AsyncStorage.setItem('lastAccount',resp.accounts[0].id)
+				}
 			}
 		} 
 		catch (error) {
@@ -72,8 +78,9 @@ export const AccountsProvider = ({
 		}
 	};
 
-	const changeActualAccount = (idAccount: string) => {
+	const changeActualAccount = async(idAccount: string) => {
 		dispatch({ type: 'changeActualAccount', payload: { idAccount } });
+		await AsyncStorage.setItem('lastAccount', idAccount)
 	};
 
 	const createAccount = async (body: CreateAccount) => {

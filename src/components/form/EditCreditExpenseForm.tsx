@@ -43,8 +43,8 @@ export const EditCreditExpenseForm = () => {
               .max(30),
             installments: Yup
               .number()
-              .min(1)
-              .positive('Las cuotas no pueden ser negativas')
+              .typeError('Número inválido')
+              .min(actualCreditExpense?.installments_paid || 1, 'No puede tener menos cuotas que la cantidad de cuotas pagadas al momento')
               .required('La cantidad de cuotas no puede quedar vacía')
           })
         }

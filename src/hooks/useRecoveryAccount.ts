@@ -46,8 +46,6 @@ export const useRecoveryAccount = ()=>{
     setIsLoading(true)
     try {
       const resp:ForgotPasswordResponse = await renewPasswordApi({email, password})
-      console.log(resp);
-      
       if (resp.error) {
         return resp.message;
       } else {

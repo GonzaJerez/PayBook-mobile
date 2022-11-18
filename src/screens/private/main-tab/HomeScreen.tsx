@@ -1,10 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import {
 	NativeStackNavigationProp,
-	NativeStackScreenProps,
 } from '@react-navigation/native-stack';
 import React, { useContext, useEffect } from 'react';
-import { StyleSheet, ScrollView, ActivityIndicator, View } from 'react-native';
+import { StyleSheet, ScrollView, View } from 'react-native';
 import { TertiaryButton } from '../../../components/buttons/TertiaryButton';
 
 import { CarouselAmounts } from '../../../components/carousels/CarouselAmounts';
@@ -15,7 +14,6 @@ import { AccountsContext } from '../../../context/accounts/AccountsContext';
 import { ExpensesContext } from '../../../context/expenses/ExpensesContext';
 import { ThemeContext } from '../../../context/theme/ThemeContext';
 import { PrivateStackNavigation } from '../../../navigation/PrivateNavigation';
-import { TabBarNavigation } from '../../../navigation/TabNavigation';
 
 export const HomeScreen = () => {
 	const { theme } = useContext(ThemeContext);
@@ -29,11 +27,7 @@ export const HomeScreen = () => {
 		getLastExpenses();
 	}, [actualAccount]);
 
-	if (isLoading) {
-		return <ActivityIndicator color={theme.colors.primary} />;
-	}
-
-	if (!actualAccount) {
+	if (!actualAccount && !isLoading) {
 		return (
 			<View style={styles.emptyDataContainer}>
 				<EmptyData text="No tienes ninguna cuenta. Crea o unete a alguna para empezar a ordenar tus gastos." />

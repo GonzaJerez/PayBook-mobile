@@ -24,7 +24,8 @@ export const EditExpenseScreen = () => {
             complete_date: new Date(Number(actualExpense?.complete_date)),
             description: actualExpense?.description || '',
             installments: actualExpense?.credit_payment?.installments || 1,
-            subcategoryId: actualExpense?.subcategory.id || ''
+            subcategoryId: actualExpense?.subcategory.id || '',
+            name_credit_payment: actualExpense?.credit_payment?.name
           }}
           onSubmit={updateExpense}
         />

@@ -7,7 +7,7 @@ export interface AccountsState {
 }
 
 type AccountsActions =
-	| { type: 'setAccounts'; payload: { accounts: Account[] } }
+	| { type: 'setAccounts'; payload: { accounts: Account[], lastAccount:string | null } }
 	| { type: 'changeActualAccount'; payload: { idAccount: string } }
 	| { type: 'createAccount'; payload: { account: Account } }
 	| { type: 'updateAccount'; payload: { account: Account } }
@@ -25,7 +25,7 @@ export const AccountsReducer = (
 			return {
 				...state,
 				allAccounts: action.payload.accounts,
-				actualAccount: action.payload.accounts[0],
+				actualAccount: action.payload.accounts.find( account => account.id === action.payload.lastAccount) || action.payload.accounts[0],
 			};
 
 		case 'changeActualAccount':

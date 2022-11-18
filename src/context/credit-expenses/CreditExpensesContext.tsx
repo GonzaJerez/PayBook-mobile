@@ -39,6 +39,7 @@ export const CreditExpensesProvider = ({children}:{children:JSX.Element | JSX.El
 
   const getCreditPayments = async({pending=true}:{pending?:boolean})=>{
     if(!token || !actualAccount) return;
+    startLoading()
     
     try {
       const resp:GetCreditPayments = await getAllCreditPaymentsApi({
@@ -49,11 +50,16 @@ export const CreditExpensesProvider = ({children}:{children:JSX.Element | JSX.El
       if(!resp.error){
         dispatch({type: 'setCreditExpenses', payload:{creditExpenses: resp.credit_payments}})
       }
-      
-    } catch (error) {
+    } 
+    catch (error) {
       handleConnectionFail();
     }
+    finally {
+      finishLoading()
+    }
   }
+
+  // const clearCreditPayments
 
   const getCreditPaymentById = async(id:string)=>{
     if(!token || !actualAccount) return;

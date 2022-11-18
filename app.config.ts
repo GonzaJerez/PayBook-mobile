@@ -4,7 +4,7 @@ export default{
   expo: {
     name: 'PayBook',
     slug: 'paybook-app',
-    version: '1.0.4',
+    version: '1.0.5',
     orientation: 'portrait',
     icon: './assets/icons/icon.png',
     scheme: 'miapp',
@@ -26,7 +26,7 @@ export default{
     },
     android: {
       package: 'com.gjdevelopment.paybookmobile',
-      versionCode: 5,
+      versionCode: 6,
       adaptiveIcon: {
         foregroundImage: './assets/icons/adaptive-icon.png',
         backgroundColor: '#ffffff'

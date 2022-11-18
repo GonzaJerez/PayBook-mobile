@@ -1,9 +1,11 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import {View, StyleSheet} from 'react-native'
 
 import {ExpenseItem} from '../item-lists/ExpenseItem'
 import {Expense} from '../../interfaces/Expense'
 import {EmptyData} from '../texts/EmptyData'
+import {ExpensesContext} from '../../context/expenses/ExpensesContext'
+import {RowLoader} from '../loaders/RowLoader'
 
 interface Props {
   data: Expense[];
@@ -11,7 +13,9 @@ interface Props {
 
 export const ExpensesList = ({data}:Props) => {
 
-  if (data.length === 0) {
+  const {isLoading} = useContext(ExpensesContext)
+
+  if (data.length === 0 && !isLoading) {
     return (
       <EmptyData 
         text='No hay gastos disponibles'
@@ -21,14 +25,23 @@ export const ExpensesList = ({data}:Props) => {
 
   return (
     <View style={styles.allExpensesContainer}>
-      {
-        data.map((exp) => (
-          <ExpenseItem 
-            key={exp.id} 
-            expense={exp}
-          />
-        ))
-      }
+      {(isLoading)
+      ? (
+        <>
+          <RowLoader width={90}/>
+          <RowLoader width={90}/>
+          <RowLoader width={90}/>
+          <RowLoader width={90}/>
+        </>
+      )
+    : (
+      data.map((exp) => (
+        <ExpenseItem 
+          key={exp.id} 
+          expense={exp}
+        />
+      ))
+    )}
     </View>
   )
 }

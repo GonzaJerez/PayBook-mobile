@@ -131,6 +131,7 @@ export const AuthProvider = ({children}: {children: JSX.Element | JSX.Element[]}
 
     try {
       await AsyncStorage.removeItem('token')
+      await AsyncStorage.removeItem('lastAccount')
     } catch (error) {
       return false;
     }

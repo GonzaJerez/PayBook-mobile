@@ -9,24 +9,26 @@ import {InlineField} from './InlineField';
 
 interface Props {
   name: string;
-  data: {label:string, value: boolean}[]
+  data: {label:string}[];
+  initialValue: boolean;
 }
 
-export const RadioButtonsField = ({name, data}:Props) => {
+export const RadioButtonsField = ({name, data, initialValue}:Props) => {
 
   const {theme} = useContext(ThemeContext)
   const [field, _meta, helpers] = useField(name)
 
-  const [showInstallmentsOptions, setShowInstallmentsOptions] = useState(false)
+  const [showInstallmentsOptions, setShowInstallmentsOptions] = useState((initialValue) ? 1 : 0)
 
-  const onChange = (show:boolean)=>{
-    if (!show) {
-      helpers.setValue(1)
-    }
-    if(show && field.value === 1){
+  const onChange = (item:{label:string})=>{
+
+    if(item.label === 'Cuotas'){
       helpers.setValue(2)
+      setShowInstallmentsOptions(1)
+    } else {
+      helpers.setValue(1)
+      setShowInstallmentsOptions(0)
     }
-   setShowInstallmentsOptions(show)
   }
 
   return (
@@ -38,13 +40,13 @@ export const RadioButtonsField = ({name, data}:Props) => {
             <TouchableOpacity
               key={index}
               style={styles.buttonContainer}
-              onPress={()=>onChange(item.value)}
+              onPress={()=>onChange(item)}
             >
               <Ionicons
-                name={`radio-button-${(showInstallmentsOptions === item.value) ? 'on' : 'off'}-outline`}
+                name={`radio-button-${(index === showInstallmentsOptions) ? 'on' : 'off'}-outline`}
                 size={20}
                 style={styles.buttonIcon}
-                color={(showInstallmentsOptions === item.value) ? theme.colors.primary : theme.ligthText}
+                color={(index === showInstallmentsOptions) ? theme.colors.primary : theme.ligthText}
               />
               <Text style={[styles.buttonLabel,{color:theme.ligthText}]}>{item.label}</Text>
             </TouchableOpacity>
@@ -52,7 +54,7 @@ export const RadioButtonsField = ({name, data}:Props) => {
         }
       </View>
 
-      {(showInstallmentsOptions) && (
+      {(showInstallmentsOptions === 1) && (
         <InlineField 
           name={name}
           label='Cantidad de cuotas'

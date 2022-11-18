@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react'
-import {View, StyleSheet, Text} from 'react-native'
+import {View, StyleSheet, Text, ActivityIndicator} from 'react-native'
 import {Formik} from 'formik'
 import * as Yup from 'yup'
 import {useNavigation} from '@react-navigation/native'
@@ -17,12 +17,14 @@ import {InlineFixedValue} from '../fields/InlineFixedValue'
 import {CreditExpensesContext} from '../../context/credit-expenses/CreditExpensesContext'
 import {EmptyData} from '../texts/EmptyData'
 import {ErrorRequest} from '../texts/ErrorRequest'
+import {ThemeContext} from '../../context/theme/ThemeContext'
 
 
 export const PayInstallmentForm = () => {
 
   const {navigate} = useNavigation<NativeStackNavigationProp<TabBarNavigation>>()
 
+  const {theme} = useContext(ThemeContext)
   const {isLoading, payInstallment} = useContext(ExpensesContext)
   const {allCreditExpenses, getCreditPayments} = useContext(CreditExpensesContext)
   const [error, setError] = useState<string>()
@@ -46,11 +48,17 @@ export const PayInstallmentForm = () => {
     }
   }
 
-  if(allCreditExpenses.length === 0){
+  if(allCreditExpenses.length === 0 && !isLoading){
     return (
       <EmptyData 
-        text='Todavía no tienes gastos en cuotas realizados'
+        text='No hay gastos en cuotas pendientes'
       />
+    )
+  }
+
+  if(isLoading){
+    return (
+      <ActivityIndicator color={theme.colors.primary} style={{marginTop:30}}/>
     )
   }
   
@@ -99,7 +107,7 @@ export const PayInstallmentForm = () => {
           <InlineFixedValue
             label='Cuotas pagadas'
             value={
-              `${allCreditExpenses.find(cred => cred.id === values.credit_payment)?.installments_paid}/${allCreditExpenses.find(cred => cred.id === values.credit_payment)?.installments}`
+              `${allCreditExpenses[0].installments_paid}/${allCreditExpenses[0].installments}`
             }
           />
           <InlineField

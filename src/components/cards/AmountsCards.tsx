@@ -1,7 +1,9 @@
 import React, {useContext} from 'react'
 import {Text, StyleSheet} from 'react-native'
+import {AccountsContext} from '../../context/accounts/AccountsContext';
 import {ThemeContext} from '../../context/theme/ThemeContext';
 import {currencyFormat} from '../../helpers/currencyFormat';
+import {RowLoader} from '../loaders/RowLoader';
 import {PrincipalCardContainer} from './PrincipalCardContainer'
 
 interface Props {
@@ -13,12 +15,25 @@ interface Props {
 export const AmountsCards = ({amount,titleCard}:Props) => {
 
   const {theme} = useContext(ThemeContext)
+  const {isLoading} = useContext(AccountsContext)
 
   return (
     <PrincipalCardContainer>
 
-      <Text style={[styles.titleCard, {color:theme.colors.text}]}>{titleCard}</Text>
-      <Text style={[styles.amountCard, {color:theme.colors.text}]}>{currencyFormat(amount || 0)}</Text>
+      {(isLoading || !amount) 
+        ? (
+          <>
+            <RowLoader height={30}/>
+            <RowLoader height={120} width={80}/>
+          </>
+        )
+        :(
+          <>
+            <Text style={[styles.titleCard, {color:theme.colors.text}]}>{titleCard}</Text>
+            <Text style={[styles.amountCard, {color:theme.colors.text}]}>{currencyFormat(amount || 0)}</Text>
+          </>
+        )
+      }
 
     </PrincipalCardContainer>
   )
