@@ -40,12 +40,12 @@ export const FilterItem = ({label, options, isOpen, setFilterOpen}: Props) => {
       >
         <View style={styles.labelContainer}>
           <Text style={[styles.label, {color: theme.ligthText}]}>{spanishFilterNames[label]}</Text>
-          {(label !== 'max_amount' && label !== 'min_amount' && ((filtersApplied[label]?.length || []) > 0)) && (
+          {((filtersApplied[label]?.length || []) > 0) && (
             <View style={[styles.filtersApplied, {backgroundColor: theme.colors.primary}]} />
           )}
         </View>
         <Ionicons
-          name='caret-down-outline'
+          name={`caret-${isOpen ? 'up' : 'down'}-outline`}
           size={16}
           color={theme.ligthText}
         />

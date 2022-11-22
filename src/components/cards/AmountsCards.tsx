@@ -20,7 +20,7 @@ export const AmountsCards = ({amount,titleCard}:Props) => {
   return (
     <PrincipalCardContainer>
 
-      {(isLoading || !amount) 
+      {(isLoading || typeof amount === 'undefined') 
         ? (
           <>
             <RowLoader height={30}/>
