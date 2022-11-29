@@ -26,7 +26,7 @@ export const AccountPicker = () => {
 
   const toCreateAccount = () => {
     setIsPopupOpen(false)
-    if(allAccounts.length >= MAX_ACCOUNTS_FREE && !user?.roles.includes(ValidRoles.USER_PREMIUM)){
+    if(allAccounts.length >= MAX_ACCOUNTS_FREE && user?.roles.includes(ValidRoles.USER)){
       navigate('SuscriptionScreen', {tryToCreateNewAccount: true})
     } else {
       navigate('AccountNavigation', {screen: 'NewAccountNavigation'})

@@ -1,5 +1,5 @@
 import React, {useContext, useState} from 'react'
-import {View, StyleSheet} from 'react-native'
+import {View, StyleSheet, ScrollView} from 'react-native'
 import {NativeStackScreenProps} from '@react-navigation/native-stack'
 
 import {UsersList} from '../../../components/lists/UsersList'
@@ -37,7 +37,7 @@ export const UsersInAccountScreen = ({navigation}: Props) => {
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.dataContainer}>
         {(user?.roles.includes(ValidRoles.ADMIN) || actualAccount?.admin_user.id === user?.id)
           ? (
@@ -71,7 +71,7 @@ export const UsersInAccountScreen = ({navigation}: Props) => {
           />
         )}
       </View>
-    </View>
+    </ScrollView>
   )
 }
 

@@ -41,22 +41,24 @@ export const OptionsButton = ({ options }: Props) => {
 			>
 				<>
 					{options.map((opt) => (
-						<PopupOption
-							onPress={() => onSelectOption(opt.onPress)}
-							key={opt.label}
-              disabled={opt.disabled}
-						>
-							<Text 
-                style={[styles.labelOption, { color: (opt.disabled) ? theme.disable : theme.colors.text }]}
-              >
-								{opt.label}
-							</Text>
-							<Ionicons
-								name={opt.icon as any}
-								size={15}
-								color={(opt.disabled) ? theme.disable : theme.colors.text}
-							/>
-						</PopupOption>
+						(!opt.disabled) && (
+							<PopupOption
+								onPress={() => onSelectOption(opt.onPress)}
+								key={opt.label}
+								disabled={opt.disabled}
+							>
+								<Text 
+									style={[styles.labelOption, { color: (opt.disabled) ? theme.disable : theme.colors.text }]}
+								>
+									{opt.label}
+								</Text>
+								<Ionicons
+									name={opt.icon as any}
+									size={15}
+									color={(opt.disabled) ? theme.disable : theme.colors.text}
+								/>
+							</PopupOption>
+						)
 					))}
 				</>
 			</PopUp>

@@ -37,7 +37,7 @@ export const UserRow = ({userInAccount, setUsersSelectedToDelete}:Props) => {
         <Text style={[styles.userEmail, {color: theme.disable}]}>{userInAccount.email}</Text>
       </View>
 
-      {(user?.roles.includes(ValidRoles.ADMIN) || actualAccount?.admin_user.id === user?.id) && (
+      {((user?.roles.includes(ValidRoles.ADMIN) || actualAccount?.admin_user.id === user?.id) && userInAccount.id !== actualAccount?.admin_user.id) && (
         <DeleteButton onPress={showAlert}/>
       )}
 
