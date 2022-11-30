@@ -45,6 +45,7 @@ export const BarChartContainer = ({
 							<Text
 								key={idx}
                 numberOfLines={2}
+								adjustsFontSizeToFit
 								style={[styles.barName, { color: color[idx] || color[0] }]}
 							>
 								{data}
@@ -83,6 +84,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		alignItems: 'flex-end',
+		paddingHorizontal:3
 	},
 	barsTextContainer: {
 		flexDirection: 'row',

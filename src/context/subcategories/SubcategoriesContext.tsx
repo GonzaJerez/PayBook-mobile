@@ -32,7 +32,7 @@ export const SubcategoriesProvider = ({children}: {children: JSX.Element | JSX.E
   const [isLoading, setIsLoading] = useState(false)
 
   const createSubcategory = async (body: CreateSubcategory) => {
-    if (!token || !actualAccount || !actualCategory?.subcategories) return;
+    if (!token || !actualAccount || !actualCategory) return;
 
     startLoading()
 
@@ -49,7 +49,7 @@ export const SubcategoriesProvider = ({children}: {children: JSX.Element | JSX.E
       } else {
         updateStateActualCategory({
           ...actualCategory,
-          subcategories: [...actualCategory.subcategories, resp.subcategory].sort((a, b) => a.name.localeCompare(b.name))
+          subcategories: [...actualCategory.subcategories || [], resp.subcategory].sort((a, b) => a.name.localeCompare(b.name))
         })
         showNotification('Subcategoría creada')
       } 

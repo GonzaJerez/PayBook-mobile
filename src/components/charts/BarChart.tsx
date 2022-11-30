@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
     flex:1,
     borderTopStartRadius: 5,
     borderTopEndRadius: 5,
-    justifyContent:'space-between'
+    justifyContent:'space-between',
+    marginHorizontal:1
   },
   bar: {
     flex: 1,

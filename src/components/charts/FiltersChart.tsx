@@ -21,6 +21,9 @@ const COLORS_TO_BARS = [
   '#ffa726',
   '#5d4037',
   '#607d8b',
+  '#D98368',
+  '#CE73D9',
+  '#94D952'
 ]
 
 export const FiltersChart = ({statistics, heightChart}:Props) => {

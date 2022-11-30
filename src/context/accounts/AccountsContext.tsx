@@ -61,7 +61,7 @@ export const AccountsProvider = ({
 		startLoading()
 		try {
 			const resp: GetAccountsProps = await getAccountsApi(token);
-			if (!resp.message) {
+			if (!resp.error && resp.accounts.length > 0) {
 				// Recuperar la ultima cuenta que estuvo usando el usuario para setearla como cuenta actual
 				const lastAccount = await AsyncStorage.getItem('lastAccount')
 				dispatch({ type: 'setAccounts', payload: { accounts: resp.accounts, lastAccount } });

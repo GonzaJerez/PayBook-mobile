@@ -18,8 +18,8 @@ interface Props
 
 export const NewCategoryScreen = ({ navigation, route }: Props) => {
 	const { type } = route.params;
-	const { isLoading, createCategory } = useContext(CategoriesContext);
-	const { createSubcategory } = useContext(SubcategoriesContext);
+	const { isLoading:isLoadingCategory, createCategory } = useContext(CategoriesContext);
+	const { createSubcategory, isLoading:isLoadingSubcategory } = useContext(SubcategoriesContext);
 	const [error, setError] = useState<string>()
 
 	useEffect(() => {
@@ -71,7 +71,7 @@ export const NewCategoryScreen = ({ navigation, route }: Props) => {
 							<SubmitOrCancelButtons
 								onSubmit={handleSubmit}
 								onCancel={navigation.goBack}
-								isLoading={isLoading}
+								isLoading={isLoadingCategory || isLoadingSubcategory}
 								disable={
 									Object.keys(errors).length > 0 ||
 									Object.keys(touched).length === 0

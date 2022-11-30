@@ -26,7 +26,7 @@ export const SubcategoriesList = () => {
       ListHeaderComponent={()=>(
         <TertiaryButton
         label={'Nueva subcategoría +'}
-        onPress={() => navigate('NewCategoryScreen',{type:'categoría'})}
+        onPress={() => navigate('NewCategoryScreen',{type:'subcategoría'})}
         style={styles.addButton}
       />
       )}

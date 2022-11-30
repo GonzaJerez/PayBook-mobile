@@ -2,6 +2,7 @@ import React, {useContext} from 'react'
 import {Text, StyleSheet} from 'react-native'
 import {AccountsContext} from '../../context/accounts/AccountsContext';
 import {ThemeContext} from '../../context/theme/ThemeContext';
+import {ExpensesContext} from '../../context/expenses/ExpensesContext';
 import {currencyFormat} from '../../helpers/currencyFormat';
 import {RowLoader} from '../loaders/RowLoader';
 import {PrincipalCardContainer} from './PrincipalCardContainer'
@@ -15,12 +16,13 @@ interface Props {
 export const AmountsCards = ({amount,titleCard}:Props) => {
 
   const {theme} = useContext(ThemeContext)
-  const {isLoading} = useContext(AccountsContext)
+  const {isLoading:isLoadingAccounts} = useContext(AccountsContext)
+  const {isLoading:isLoadingExpenses} = useContext(ExpensesContext)
 
   return (
     <PrincipalCardContainer>
 
-      {(isLoading || typeof amount === 'undefined') 
+      {(isLoadingAccounts || isLoadingExpenses)
         ? (
           <>
             <RowLoader height={30}/>
