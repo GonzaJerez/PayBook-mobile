@@ -35,6 +35,7 @@ export const EditCategoryScreen = ({navigation,route}:Props) => {
         setError(errorMessage)
       } else {
         navigation.goBack()
+        navigation.goBack()
       }
     },
     textToConfirm: 'Eliminar'

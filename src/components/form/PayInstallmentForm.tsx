@@ -124,6 +124,7 @@ export const PayInstallmentForm = () => {
           />
           {(error) && (<ErrorRequest>{error}</ErrorRequest>)}
           <SubmitOrCancelButtons
+            submitLabel='Pagar cuota'
             onSubmit={handleSubmit}
             onCancel={() => cleanForm(resetForm)}
             disable={(Object.keys(errors).length > 0)}

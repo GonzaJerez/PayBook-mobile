@@ -13,16 +13,11 @@ import { CreditExpensesContext } from '../../context/credit-expenses/CreditExpen
 
 export const ListDetailsExpense = () => {
 	const { actualExpense } = useContext(ExpensesContext);
-	// const { getCreditPaymentById } = useContext(CreditExpensesContext);
 	const yearWithTwoDigits = String(actualExpense?.year).slice(2);
 	const formatDate = `${actualExpense?.num_date}/${actualExpense?.month}/${yearWithTwoDigits}`;
 
 	const { navigate } =
 		useNavigation<NativeStackNavigationProp<PrivateStackNavigation>>();
-
-	// useEffect(() => {
-	// 	getCreditPaymentById(actualExpense?.credit_payment?.id || '');
-	// }, [actualExpense]);
 
 	const onViewDetailsCreditPayment = () => {
 		if (!actualExpense?.credit_payment) return;

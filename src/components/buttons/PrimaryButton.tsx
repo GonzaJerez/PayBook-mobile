@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     height: 40,
+    paddingHorizontal:15,
     alignItems: 'center',
     justifyContent: 'center'
   },

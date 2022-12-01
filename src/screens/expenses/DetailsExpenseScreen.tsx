@@ -9,6 +9,8 @@ import {useAlertToConfirm} from '../../hooks/useAlertToConfirm'
 import {ExpensesContext} from '../../context/expenses/ExpensesContext'
 import {ThemeContext} from '../../context/theme/ThemeContext'
 import {ErrorRequest} from '../../components/texts/ErrorRequest'
+import {AuthContext} from '../../context/auth/AuthContext'
+import {AccountsContext} from '../../context/accounts/AccountsContext'
 
 
 interface Props extends NativeStackScreenProps<ExpenseStackNavigation,'DetailsExpenseScreen'>{}
@@ -16,8 +18,10 @@ interface Props extends NativeStackScreenProps<ExpenseStackNavigation,'DetailsEx
 
 export const DetailsExpenseScreen = ({navigation}:Props) => {
 
-  const {isLoading, removeExpense} = useContext(ExpensesContext)
   const {theme} = useContext(ThemeContext)
+  const {user} = useContext(AuthContext)
+  const {actualAccount} = useContext(AccountsContext)
+  const {actualExpense ,isLoading, removeExpense} = useContext(ExpensesContext)
   const [error, setError] = useState<string>()
 
   const toRemoveExpense = async()=>{
@@ -52,11 +56,16 @@ export const DetailsExpenseScreen = ({navigation}:Props) => {
 
   useEffect(()=>{
     navigation.setOptions({
-      headerRight: ()=>(
-        <OptionsButton 
-        options={options}
-      />
-      )
+      headerRight: ()=>{
+        if(actualExpense?.user.id === user?.id || actualAccount?.admin_user.id === user?.id){
+          return (
+            <OptionsButton 
+            options={options}
+          />
+          )
+        }
+      }
+      
     })
   },[])
 

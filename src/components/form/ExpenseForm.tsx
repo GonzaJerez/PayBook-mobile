@@ -141,6 +141,7 @@ export const ExpenseForm = ({ initialValues, onSubmit }: Props) => {
 					{error && <ErrorRequest>{error}</ErrorRequest>}
 
 					<SubmitOrCancelButtons
+						submitLabel={(initialValues.categoryId) ? 'Actualizar gasto' : 'Crear gasto'}
 						onSubmit={handleSubmit}
 						onCancel={() => onCancel(resetForm)}
 						disable={Object.keys(errors).length > 0}

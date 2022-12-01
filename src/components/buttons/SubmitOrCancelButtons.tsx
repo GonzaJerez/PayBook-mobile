@@ -41,6 +41,6 @@ const styles = StyleSheet.create({
     justifyContent:'space-around',
   },
   saveButton:{
-    width:100
+    // width:100
   },
 })
