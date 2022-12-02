@@ -9,11 +9,10 @@ PayBook es una aplicación para administrar y visualizar gráficamente tanto los
 
 * Solo disponible para Android por el momento <img src="https://raw.githubusercontent.com/github/explore/80688e429a7d4ef2fca1e82350fe8e3517d3494d/topics/android/android.png" alt="React" width="24">
 
-<img src="https://lh3.googleusercontent.com/q1k2l5CwMV31JdDXcpN4Ey7O43PxnjAuZBTmcHEwQxVuv_2wCE2gAAQMWxwNUC2FYEOnYgFPOpw6kmHJWuEGeIBLTj9CuxcOEeU8UXyzWJq4NJM3lg=s0" alt="Play Store" width="120" href=""/>
+<img src="https://lh3.googleusercontent.com/q1k2l5CwMV31JdDXcpN4Ey7O43PxnjAuZBTmcHEwQxVuv_2wCE2gAAQMWxwNUC2FYEOnYgFPOpw6kmHJWuEGeIBLTj9CuxcOEeU8UXyzWJq4NJM3lg=s0" alt="Play Store" width="120" href="https://play.google.com/store/apps/details?id=com.gjdevelopment.paybookmobile&hl=es"/>
 
 <img src="https://github.com/GonzaJerez/proyects_images/blob/main/PayBook/presentation_play_store/banner.png?raw=true" alt="Play Store banner">
 
-...gif
 
 ### Pantalla de ingreso
 - Posibilidad de registarse con mail personal o con google.
