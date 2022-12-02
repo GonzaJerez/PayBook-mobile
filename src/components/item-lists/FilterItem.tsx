@@ -57,7 +57,7 @@ export const FilterItem = ({label, options, isOpen, setFilterOpen}: Props) => {
             (isSelected(opt.value) && (
               <CheckboxField
                 key={index}
-                label={(label === 'month') ? MONTHS[+opt.label] : opt.label}
+                label={(label === 'month') ? MONTHS[+opt.label - 1] : opt.label}
                 style={styles.option}
                 initialState={isSelected(opt.value)}
                 onPress={()=>removeFilter(label, opt.value)}
@@ -68,7 +68,7 @@ export const FilterItem = ({label, options, isOpen, setFilterOpen}: Props) => {
             (!isSelected(opt.value) && (
               <CheckboxField
                 key={index}
-                label={(label === 'month') ? MONTHS[+opt.label] : opt.label}
+                label={(label === 'month') ? MONTHS[+opt.label - 1] : opt.label}
                 style={styles.option}
                 initialState={isSelected(opt.value)}
                 onPress={()=>addFilter(label, opt.value)}

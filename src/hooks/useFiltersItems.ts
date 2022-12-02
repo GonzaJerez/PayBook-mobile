@@ -29,8 +29,8 @@ export const useFiltersItems = ()=>{
     {
       filterName: 'month',
       options: getRange(11, 11).sort((a, b) => (+a) - (+b)).map(num => ({
-        label: num,
-        value: num
+        label: `${+num + 1}`,
+        value: `${+num + 1}`
       }))
     },
     {

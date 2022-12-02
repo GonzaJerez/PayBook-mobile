@@ -52,7 +52,8 @@ const styles = StyleSheet.create({
     height: 40,
     paddingHorizontal:15,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    minWidth: 100
   },
   textButton: {
     fontSize: 16,
