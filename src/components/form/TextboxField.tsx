@@ -24,11 +24,12 @@ export const TextboxField = ({name, placeholder}: Props) => {
       <Text style={[styles.label, {color: theme.ligthText}]}>Descripción</Text>
 
       <TextInput
-        style={[styles.textBoxContainer, {borderColor: theme.colors.border}]}
+        style={[styles.textBoxContainer, {borderColor: theme.colors.border, color: theme.colors.text}]}
         multiline
         numberOfLines={5}
         selectionColor={theme.colors.primary}
         placeholder={(placeholder) ? placeholder : 'Descripción del gasto'}
+        placeholderTextColor={theme.disable}
         value={field.value}
         onChangeText={value => helpers.setValue(value)}
         onBlur={() => setErrorVisible(true)}

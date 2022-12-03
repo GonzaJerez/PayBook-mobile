@@ -45,6 +45,7 @@ export const DateInput = ({name}:Props) => {
         <Ionicons 
           name='calendar-outline'
           size={18}
+          color={theme.ligthText}
         />
       </TouchableOpacity>
 
