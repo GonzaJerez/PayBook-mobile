@@ -12,6 +12,7 @@ import {PremiumSuscriptionCard} from '../../../components/cards/PremiumSuscripti
 import {externalLinks} from '../../../constants/ExternalLinks';
 import {ValidRoles} from '../../../interfaces/ValidRoles';
 import {PrivateStackNavigation} from '../../../navigation/PrivateNavigation';
+import {EmptyData} from '../../../components/texts/EmptyData';
 
 const REVENUE_API_KEY = Constants?.manifest?.extra?.revenueApiKey
 
@@ -62,8 +63,10 @@ export const SuscriptionScreen = ({navigation, route}: Props) => {
   }
 
   useEffect(() => {
-    getInfoSubscription()
-      .catch(console.log);
+    if(!user?.roles.includes(ValidRoles.SUPER_USER)){
+      getInfoSubscription()
+        .catch(console.log);
+    }
   }, [])
 
 
@@ -90,7 +93,14 @@ export const SuscriptionScreen = ({navigation, route}: Props) => {
         console.log(error);
       }
     }
+  }
 
+  if(user?.roles.includes(ValidRoles.SUPER_USER)){
+    return (
+      <View style={styles.containerSuperUser}>
+        <EmptyData text='Actualmente eres un "Super Usuario" de PayBook, tienes todos los beneficios de los usuarios premium de manera gratuita!'/>
+      </View>
+    )
   }
 
   return (
@@ -176,5 +186,8 @@ const styles = StyleSheet.create({
   },
   errorItem: {
     paddingVertical: 5
+  },
+  containerSuperUser:{
+    marginHorizontal:20
   }
 })
