@@ -34,7 +34,6 @@ export const CategoriesProvider = ({children}:{children:JSX.Element | JSX.Elemen
 
   const [state, dispatch] = useReducer(CategoriesReducer, initialValues)
 
-
   const getCategories = async ()=>{
     if(!token || !actualAccount) return;
     startLoading()

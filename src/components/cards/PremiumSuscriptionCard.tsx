@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     marginVertical: 30
   },
   priceText: {
-    fontSize: 50,
+    fontSize: 40,
     fontWeight: '500',
   },
   currencyCode: {
