@@ -19,6 +19,7 @@ export const StatsScreen = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isRefreshing, setIsRefreshing] = useState(false);
 	const [statistics, setStatistics] = useState<StatisticsResponse>();
+	
 
 	const onGetStatistics = async () => {
 		try {

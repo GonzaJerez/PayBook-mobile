@@ -12,6 +12,9 @@ interface Props {
   heightChart: number
 }
 
+const currentDate = new Date();
+const currentYear = currentDate.getFullYear();
+
 export const AmountsForMonths = ({heightChart, statistics}: Props) => {
 
   const {theme} = useContext(ThemeContext)
@@ -35,9 +38,10 @@ export const AmountsForMonths = ({heightChart, statistics}: Props) => {
   return (
     <BarChartContainer
       maxToGraph={maxToGraph}
-      title={new Date().getFullYear().toString()}
+      title={(currentDate.getMonth() === 11) ? currentYear.toString() : `${currentYear -1} - ${currentYear}`}
       data={amountForMonth.map(data => (MONTHS[data.month - 1][0]))}
       color={[theme.colors.primary]}
+      monthGraph
     >
       {amountForMonth.map((el,idx) => (
         <BarChart

@@ -12,6 +12,7 @@ interface Props {
 	title: string;
 	data: string[];
 	color: string[];
+	monthGraph?: boolean;
 }
 
 const HEIGHT_CHART = 180;
@@ -22,8 +23,12 @@ export const BarChartContainer = ({
 	maxToGraph,
 	data,
 	color,
+	monthGraph = false
 }: Props) => {
 	const { theme } = useContext(ThemeContext);
+
+	console.log(data);
+	
 
 	return (
 		<PrincipalCardContainer size="big">
@@ -42,14 +47,26 @@ export const BarChartContainer = ({
 
 					<View style={styles.barsTextContainer}>
 						{data.map((data, idx) => (
-							<Text
+							<View
 								key={idx}
-                numberOfLines={2}
-								adjustsFontSizeToFit
-								style={[styles.barName, { color: color[idx] || color[0] }]}
+								style={{borderBottomWidth:(monthGraph && idx === new Date().getMonth()) ? 1 : 0, borderColor: theme.colors.primary}}
 							>
-								{data}
-							</Text>
+								<Text
+									// key={idx}
+									numberOfLines={2}
+									adjustsFontSizeToFit
+									style={[
+										styles.barName, 
+										{ 
+											color: color[idx] || color[0],
+											fontWeight: (monthGraph && idx === new Date().getMonth()) ? '900' : '400',
+										},
+									]}
+								>
+									{data}
+								</Text>
+							
+							</View>
 						))}
 					</View>
 				</View>
